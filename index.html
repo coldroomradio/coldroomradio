@@ -3,49 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cold Room Radio</title>
+  <title>COLD ROOM RADIO</title>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;600&display=swap" rel="stylesheet">
 
   <!-- Plyr (player UI) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
 
   <style>
-    /* --------------------------------------------------
-       Basic reset & layout
-    --------------------------------------------------*/
     :root{
       --bg:#04060a;
       --nebula:#08282d;
-      --accent:#2bd1ea; /* nebula blue */
+      --accent:#2bd1ea;
       --muted:#9aa6ad;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'IBM Plex Sans',system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;border:0}
+    html,body{height:100%;margin:0;font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;border:0;color:#fff;background:var(--bg)}
     a{color:inherit}
 
-    /* --------------------------------------------------
-       Full-screen nebula background (uses provided images if available)
-    --------------------------------------------------*/
-    .bg-wrap{
-      position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg);
-    }
+    /* Background layers */
+    .bg-wrap{position:fixed;inset:0;z-index:-3;overflow:hidden;background:var(--bg);}
     .bg-layer{
-      position:absolute;inset:0;background-image:radial-gradient(circle at 10% 80%, rgba(43,209,234,0.06), transparent 6%), radial-gradient(circle at 85% 20%, rgba(255,140,80,0.04), transparent 8%), radial-gradient(circle at 40% 30%, rgba(100,200,150,0.03), transparent 10%), url('MainVisual.png');
-      background-size:cover;background-position:center center;filter:contrast(1.02) saturate(.95);
-      transform:scale(1.03);animation: drift 30s linear infinite;
-      opacity:.10
+      position:absolute;inset:0;
+        background:
+          radial-gradient(ellipse at 20% 80%, rgba(43,209,234,0.08) 0%, transparent 60%),
+          radial-gradient(ellipse at 80% 20%, rgba(80,140,255,0.07) 0%, transparent 70%),
+          radial-gradient(ellipse at 50% 50%, rgba(100,200,150,0.05) 0%, transparent 80%),
+          linear-gradient(135deg, #04060a 60%, #08282d 100%);
+        background-size: cover;
+        background-position: center center;
+        opacity: 1;
     }
     @keyframes drift{0%{transform:translate3d(0,0,0) scale(1.03)}50%{transform:translate3d(-12px,6px,0) scale(1.04)}100%{transform:translate3d(0,0,0) scale(1.03)}}
-
     .grain{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);background-size:4px 4px;mix-blend-mode:overlay;opacity:.5}
 
-    /* --------------------------------------------------
-       Container
-    --------------------------------------------------*/
-    .wrap{max-width:1100px;margin:48px auto;padding:36px;color:#fff}
-
+    /* Layout */
+    .wrap{max-width:1100px;margin:48px auto;padding:36px}
     header{display:flex;align-items:center;gap:20px}
     .logo{width:140px;height:140px;flex:0 0 140px;display:flex;align-items:center;justify-content:center}
     .logo img{max-width:100%;max-height:100%;object-fit:contain}
@@ -53,35 +47,52 @@
     h1{font-family:'Orbitron',sans-serif;margin:0;font-size:38px;letter-spacing:1px}
     p.lead{margin:.6rem 0 0;color:var(--muted);font-size:15px;line-height:1.5}
 
-    /* player box */
-    .player-card{margin-top:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));border-radius:12px;padding:18px;backdrop-filter: blur(6px);box-shadow:0 6px 24px rgba(3,6,10,0.6)}
+    /* Liquid glass player */
+    .player-card{
+      margin-top:22px;padding:20px;border-radius:16px;
+      background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));
+      backdrop-filter:blur(14px) saturate(160%);
+      -webkit-backdrop-filter:blur(14px) saturate(160%);
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);
+    }
 
-    /* episodes */
+    /* Plyr overrides */
+    .plyr--audio .plyr__controls{background:transparent !important;color:var(--muted)}
+    .plyr--audio .plyr__control{
+      background:rgba(255,255,255,0.08) !important;
+      border-radius:50%;transition:background .3s,color .3s;
+    }
+    .plyr--audio .plyr__control:hover{
+      background:var(--accent) !important;color:#000 !important;
+    }
+
+    /* Episodes */
     .episodes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
-    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
     .episode:hover{transform:translateY(-3px);transition:transform .18s}
     .episode .meta{flex:1}
     .episode .title{font-weight:600}
     .episode .date{font-size:13px;color:var(--muted)}
 
-    /* form */
-    form.contact{margin-top:24px;padding:16px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
+    /* Form */
+    form.contact{margin-top:24px;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
     .field{display:flex;flex-direction:column;margin-bottom:12px}
     label{font-size:13px;color:var(--muted);margin-bottom:6px}
     input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
     textarea{min-height:120px;resize:vertical}
     button{background:linear-gradient(90deg,var(--accent),#7af5ff);border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
 
-    /* footer */
+    /* Footer */
     footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
     .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
 
-    /* responsive */
     @media (max-width:720px){.wrap{padding:20px;margin:18px auto}.logo{width:90px;height:90px}.brand h1{font-size:26px}}
   </style>
 </head>
 <body>
 
+  <!-- Nebula + grain -->
   <div class="bg-wrap" aria-hidden>
     <div class="bg-layer"></div>
     <div class="grain"></div>
@@ -89,24 +100,20 @@
 
   <main class="wrap">
     <header>
-      <div class="logo">
-        <!-- Replace 'logo.png' with your actual logo filename. -->
-        <img src="logo.png" alt="Cold Room Radio logo">
-      </div>
+      <div class="logo"><img src="logo.png" alt="Cold Room Radio logo"></div>
       <div class="brand">
-        <h1>Cold Room Radio</h1>
-    <p class="lead">
-      Perfumeがコールドスリープ中のこの時間、ファン同士で記憶と記録を共有しながら<br>
-      静かに過ごすラジオ番組。微睡む電波の中で、冷たい空気と音が繋ぐ<br>
-      “もう一つの部屋”へようこそ。
-    </p>
+        <h1>COLD ROOM RADIO</h1>
+        <p class="lead">
+          Perfumeがコールドスリープ中のこの時間、ファン同士で記憶と記録を共有しながら<br>
+          静かに過ごすラジオ番組。微睡む電波の中で、冷たい空気と音が繋ぐ<br>
+          “もう一つの部屋”へようこそ。
+        </p>
         <div style="margin-top:12px;color:var(--muted)">次回公開: <strong>#1 &lt;cold sleep&gt; — 2025/10/05</strong></div>
       </div>
     </header>
 
     <section class="player-card">
       <div id="player-wrap">
-        <!-- Plyr player -->
         <audio id="audio-player" controls crossorigin playsinline>
           <source id="audio-source" src="" type="audio/mpeg">
           あなたのブラウザは audio をサポートしていません。
@@ -117,24 +124,22 @@
         <div style="min-width:220px">
           <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
           <div id="now-title" style="font-weight:600">#1 &lt;cold sleep&gt;</div>
-          <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">公開予定 — audio URL は後で差し替えます。</div>
-        </div>
-
-        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-          <a class="btn" href="episodes.html" style="color:var(--muted);text-decoration:underline">エピソード一覧</a>
+          <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">公開予定 — audio URL は後で差し替えます。
+                    </div>
       </div>
 
-      <!-- Episode list (click to load into player) -->
+      <!-- Episode list -->
       <div class="episodes" id="episodes-list">
         <!-- JS will populate this -->
       </div>
-
     </section>
 
+  <section>
+    <h2 style="font-family:'Exo 2',sans-serif;font-weight:200;font-size:20px;margin-bottom:2px;color:var(--accent)">
+      メッセージを送る
+    </h2>
     <section>
       <form class="contact" id="contact-form" action="https://formsubmit.co/ptacoldroom@gmail.com" method="POST">
-        <!-- formsubmit.co will forward to your email. You can replace with Formspree if you prefer. -->
-        <!-- To prevent spam with formsubmit.co, consider adding a hidden _captcha field or sign up on their site. -->
         <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
         <input type="hidden" name="_next" value="/thanks.html">
 
@@ -170,21 +175,18 @@
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
   <script>
-    // ----------------------
-    // Minimal site data + player logic
-    // ----------------------
+    // Episodes data
     const episodes = [
       {
         id:1,
         title:"<cold sleep>",
         date:"2025-10-05",
         desc:"公開予定 — アップロード後に音源URLを差し替えます。",
-        // Replace the empty string below with the final archive.org file URL (mp3).
-        src:"" // e.g. "https://archive.org/download/your-audio-file.mp3"
+        src:"" // Replace with archive.org mp3 URL
       }
     ];
 
-    // populate episodes list
+    // Populate episode list
     const elList = document.getElementById('episodes-list');
     episodes.forEach(ep=>{
       const div = document.createElement('div');
@@ -194,7 +196,7 @@
       elList.appendChild(div);
     });
 
-    // initialize Plyr
+    // Initialize Plyr
     const player = new Plyr('#audio-player', {controls:['play','progress','current-time','mute','volume']});
 
     function loadEpisode(ep){
@@ -211,13 +213,9 @@
       document.getElementById('now-desc').textContent = ep.desc;
     }
 
-    // helper: replace episode src when you paste the archive.org url into a prompt (or edit the file directly)
-
-    // Auto-load first episode if it has a src
     if(episodes[0] && episodes[0].src){
       loadEpisode(episodes[0]);
     }
-
   </script>
 
 </body>
