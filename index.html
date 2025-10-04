@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cold Room Radio</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Plyr (player UI) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
+
+  <style>
+    /* --------------------------------------------------
+       Basic reset & layout
+    --------------------------------------------------*/
+    :root{
+      --bg:#04060a;
+      --nebula:#08282d;
+      --accent:#2bd1ea; /* nebula blue */
+      --muted:#9aa6ad;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'IBM Plex Sans',system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;border:0}
+    a{color:inherit}
+
+    /* --------------------------------------------------
+       Full-screen nebula background (uses provided images if available)
+    --------------------------------------------------*/
+    .bg-wrap{
+      position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg);
+    }
+    .bg-layer{
+      position:absolute;inset:0;background-image:radial-gradient(circle at 10% 80%, rgba(43,209,234,0.06), transparent 6%), radial-gradient(circle at 85% 20%, rgba(255,140,80,0.04), transparent 8%), radial-gradient(circle at 40% 30%, rgba(100,200,150,0.03), transparent 10%), url('MainVisual.png');
+      background-size:cover;background-position:center center;filter:contrast(1.02) saturate(.95);
+      transform:scale(1.03);animation: drift 30s linear infinite;
+      opacity:.95
+    }
+    @keyframes drift{0%{transform:translate3d(0,0,0) scale(1.03)}50%{transform:translate3d(-12px,6px,0) scale(1.04)}100%{transform:translate3d(0,0,0) scale(1.03)}}
+
+    .grain{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);background-size:4px 4px;mix-blend-mode:overlay;opacity:.5}
+
+    /* --------------------------------------------------
+       Container
+    --------------------------------------------------*/
+    .wrap{max-width:1100px;margin:48px auto;padding:36px;color:#fff}
+
+    header{display:flex;align-items:center;gap:20px}
+    .logo{width:140px;height:140px;flex:0 0 140px;display:flex;align-items:center;justify-content:center}
+    .logo img{max-width:100%;max-height:100%;object-fit:contain}
+    .brand{flex:1}
+    h1{font-family:'Orbitron',sans-serif;margin:0;font-size:38px;letter-spacing:1px}
+    p.lead{margin:.6rem 0 0;color:var(--muted);font-size:15px;line-height:1.5}
+
+    /* player box */
+    .player-card{margin-top:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));border-radius:12px;padding:18px;backdrop-filter: blur(6px);box-shadow:0 6px 24px rgba(3,6,10,0.6)}
+
+    /* episodes */
+    .episodes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
+    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .episode:hover{transform:translateY(-3px);transition:transform .18s}
+    .episode .meta{flex:1}
+    .episode .title{font-weight:600}
+    .episode .date{font-size:13px;color:var(--muted)}
+
+    /* form */
+    form.contact{margin-top:24px;padding:16px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
+    .field{display:flex;flex-direction:column;margin-bottom:12px}
+    label{font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
+    textarea{min-height:120px;resize:vertical}
+    button{background:linear-gradient(90deg,var(--accent),#7af5ff);border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+
+    /* footer */
+    footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+    .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
+
+    /* responsive */
+    @media (max-width:720px){.wrap{padding:20px;margin:18px auto}.logo{width:90px;height:90px}.brand h1{font-size:26px}}
+  </style>
+</head>
+<body>
+
+  <div class="bg-wrap" aria-hidden>
+    <div class="bg-layer"></div>
+    <div class="grain"></div>
+  </div>
+
+  <main class="wrap">
+    <header>
+      <div class="logo">
+        <!-- Replace 'logo.png' with your actual logo filename. -->
+        <img src="logo.png" alt="Cold Room Radio logo">
+      </div>
+      <div class="brand">
+        <h1>Cold Room Radio</h1>
+        <p class="lead">Perfumeがコールドスリープ中のこの時間、ファン同士で記憶と記録を共有しながら静かに過ごすラジオ番組。微睡む電波の中で、冷たい空気と音が繋ぐ“もう一つの部屋”へようこそ。</p>
+
+        <div style="margin-top:12px;color:var(--muted)">次回公開: <strong>#1 &lt;cold sleep&gt; — 2025/10/05</strong></div>
+      </div>
+    </header>
+
+    <section class="player-card">
+      <div id="player-wrap">
+        <!-- Plyr player -->
+        <audio id="audio-player" controls crossorigin playsinline>
+          <source id="audio-source" src="" type="audio/mpeg">
+          あなたのブラウザは audio をサポートしていません。
+        </audio>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
+        <div style="min-width:220px">
+          <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
+          <div id="now-title" style="font-weight:600">#1 &lt;cold sleep&gt;</div>
+          <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">公開予定 — audio URL は後で差し替えます。</div>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <a class="btn" href="episodes.html" style="color:var(--muted);text-decoration:underline">エピソード一覧</a>
+          <div style="color:var(--muted);font-size:13px">メール: ptacoldroom@gmail.com</div>
+        </div>
+      </div>
+
+      <!-- Episode list (click to load into player) -->
+      <div class="episodes" id="episodes-list">
+        <!-- JS will populate this -->
+      </div>
+
+    </section>
+
+    <section>
+      <form class="contact" id="contact-form" action="https://formsubmit.co/ptacoldroom@gmail.com" method="POST">
+        <!-- formsubmit.co will forward to your email. You can replace with Formspree if you prefer. -->
+        <!-- To prevent spam with formsubmit.co, consider adding a hidden _captcha field or sign up on their site. -->
+        <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
+        <input type="hidden" name="_next" value="/thanks.html">
+
+        <div class="field">
+          <label for="name">お名前（任意）</label>
+          <input id="name" name="name" type="text" placeholder="ハンドルネームでOK">
+        </div>
+        <div class="field">
+          <label for="email">メールアドレス（任意）</label>
+          <input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ">
+        </div>
+        <div class="field">
+          <label for="message">メッセージ</label>
+          <textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="submit">送信する</button>
+          <div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <div>© Cold Room Radio — 非公式ファンラジオ</div>
+      <div class="socials">
+        <a href="https://x.com/coldroomradio" target="_blank" rel="noopener">X @coldroomradio</a>
+        <a href="https://instagram.com/coldroomradio" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Plyr script -->
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+
+  <script>
+    // ----------------------
+    // Minimal site data + player logic
+    // ----------------------
+    const episodes = [
+      {
+        id:1,
+        title:"<cold sleep>",
+        date:"2025-10-05",
+        desc:"公開予定 — アップロード後に音源URLを差し替えます。",
+        // Replace the empty string below with the final archive.org file URL (mp3).
+        src:"" // e.g. "https://archive.org/download/your-audio-file.mp3"
+      }
+    ];
+
+    // populate episodes list
+    const elList = document.getElementById('episodes-list');
+    episodes.forEach(ep=>{
+      const div = document.createElement('div');
+      div.className='episode';
+      div.innerHTML = `<div class=meta><div class=title>#${ep.id} ${ep.title}</div><div class=date>${ep.date}</div></div><div style='font-size:13px;color:var(--muted)'>▶︎ 再生</div>`;
+      div.addEventListener('click',()=>loadEpisode(ep));
+      elList.appendChild(div);
+    });
+
+    // initialize Plyr
+    const player = new Plyr('#audio-player', {controls:['play','progress','current-time','mute','volume']});
+
+    function loadEpisode(ep){
+      const srcEl = document.getElementById('audio-source');
+      const audioEl = document.getElementById('audio-player');
+      if(!ep.src){
+        alert('このエピソードの音源URLがまだ設定されていません。管理画面でsrcを差し替えてください。');
+        return;
+      }
+      srcEl.src = ep.src;
+      audioEl.load();
+      player.play();
+      document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
+      document.getElementById('now-desc').textContent = ep.desc;
+    }
+
+    // helper: replace episode src when you paste the archive.org url into a prompt (or edit the file directly)
+
+    // Auto-load first episode if it has a src
+    if(episodes[0] && episodes[0].src){
+      loadEpisode(episodes[0]);
+    }
+
+  </script>
+
+</body>
+</html>
