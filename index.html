@@ -144,35 +144,57 @@
       <div class="brand">
         <h1>COLD ROOM RADIO</h1>
         <p class="lead">
-          Perfumeがコールドスリープ中のこの時間、ファン同士で記憶と記録を共有しながら<br>
-          静かに過ごすラジオ番組。微睡む電波の中で、冷たい空気と音が繋ぐ<br>
-          “もう一つの部屋”へようこそ。
+          記録と記憶が交差する場所──『パラレル・タイム・アーカイブのCold Room』（PTACR）へようこそ。<br>
+          Perfumeがコールドスリープしているこの時間、ファン同士が静かに記憶と記録を共有し、<br>
+          共に過ごす非公式ファンレイディオ番組です。
         </p>
         <div style="margin-top:12px;color:var(--muted)">次回公開: <strong>#1 &lt;cold sleep&gt; — 2025/10/05</strong></div>
       </div>
     </header>
 
-    <section class="player-card">
-      <div id="player-wrap">
-        <audio id="audio-player" controls crossorigin playsinline>
-          <source id="audio-source" src="" type="audio/mpeg">
-          あなたのブラウザは audio をサポートしていません。
-        </audio>
+  <section class="player-card">
+    <div id="player-wrap">
+      <audio id="audio-player" controls crossorigin playsinline>
+        <source id="audio-source" src="" type="audio/mpeg" data-title="#1 <cold sleep>">
+        あなたのブラウザは audio をサポートしていません。
+      </audio>
+    </div>
+  
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-top:12px;flex-wrap:wrap">
+      <!-- 現在のエピソード -->
+      <div style="min-width:220px">
+        <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
+        <div id="now-title" style="font-weight:600">#1 &lt;cold sleep&gt;</div>
+        <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">
+          公開予定 — audio URL は後で差し替え予定。
+        </div>
       </div>
+  
+      <!-- Upcomingエピソードリスト -->
+      <div class="episodes" id="episodes-list" style="min-width:220px">
+        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+          <div style="font-weight:600">#2 &lt;first encounter(deai)&gt;</div>
+          <div style="font-size:13px;color:var(--muted)">公開予定</div>
+        </div>
+  
+        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+          <div style="font-weight:600">#3 &lt;echoes&gt;</div>
+          <div style="font-size:13px;color:var(--muted)">公開予定</div>
+        </div>
+  
+        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+          <div style="font-weight:600">#4 &lt;past memories&gt;</div>
+          <div style="font-size:13px;color:var(--muted)">公開予定</div>
+        </div>
+        
+        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+          <div style="font-weight:600">#5 &lt;future&gt;</div>
+          <div style="font-size:13px;color:var(--muted)">公開予定</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
-        <div style="min-width:220px">
-          <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
-          <div id="now-title" style="font-weight:600">#1 &lt;cold sleep&gt;</div>
-          <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">公開予定 — audio URL は後で差し替えます。
-                    </div>
-      </div>
-
-      <!-- Episode list -->
-      <div class="episodes" id="episodes-list">
-        <!-- JS will populate this -->
-      </div>
-    </section>
 
   <section>
     <h2 style="font-family:'Exo 2',sans-serif;font-weight:200;font-size:20px;margin-bottom:2px;color:var(--accent)">
