@@ -152,48 +152,45 @@
       </div>
     </header>
 
-  <section class="player-card">
-    <div id="player-wrap">
-      <audio id="audio-player" controls crossorigin playsinline>
+  <section class="player-card" style="display:flex;flex-direction:column;gap:16px;">
+    
+    <!-- プレイヤー -->
+    <div id="player-wrap" style="width:100%; max-width:500px;">
+      <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
         <source id="audio-source" src="" type="audio/mpeg" data-title="#1 <cold sleep>">
         あなたのブラウザは audio をサポートしていません。
       </audio>
     </div>
   
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-top:12px;flex-wrap:wrap">
-      <!-- 現在のエピソード -->
-      <div style="min-width:220px">
-        <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
-        <div id="now-title" style="font-weight:600">#1 &lt;cold sleep&gt;</div>
-        <div id="now-desc" style="font-size:13px;color:var(--muted);margin-top:6px">
-          公開予定 — audio URL は後で差し替え予定。
-        </div>
-      </div>
-  
-      <!-- Upcomingエピソードリスト -->
-      <div class="episodes" id="episodes-list" style="min-width:220px">
-        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-          <div style="font-weight:600">#2 &lt;first encounter(deai)&gt;</div>
-          <div style="font-size:13px;color:var(--muted)">公開予定</div>
-        </div>
-  
-        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-          <div style="font-weight:600">#3 &lt;echoes&gt;</div>
-          <div style="font-size:13px;color:var(--muted)">公開予定</div>
-        </div>
-  
-        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-          <div style="font-weight:600">#4 &lt;past memories&gt;</div>
-          <div style="font-size:13px;color:var(--muted)">公開予定</div>
-        </div>
-        
-        <div class="episode upcoming" style="margin-bottom:12px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-          <div style="font-weight:600">#5 &lt;future&gt;</div>
-          <div style="font-size:13px;color:var(--muted)">公開予定</div>
-        </div>
+    <!-- 現在のエピソード -->
+    <div style="max-width:500px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+      <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
+      <div id="now-title" style="font-weight:600; margin-top:4px;">#1 &lt;cold sleep&gt;</div>
+      <div id="now-desc" style="font-size:13px;color:var(--muted); margin-top:6px;">
+        公開予定 — audio URL は後で差し替えます。
       </div>
     </div>
+  
+    <!-- Upcomingエピソードリスト -->
+    <div class="episodes" id="episodes-list" style="display:flex; flex-direction:column; gap:8px; max-width:500px;">
+      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+        <div style="font-weight:600">#2 &lt;dream state&gt;</div>
+        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
+      </div>
+  
+      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+        <div style="font-weight:600">#3 &lt;midnight echoes&gt;</div>
+        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
+      </div>
+  
+      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+        <div style="font-weight:600">#4 &lt;silent signal&gt;</div>
+        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
+      </div>
+    </div>
+  
   </section>
+
 
 
   <section>
