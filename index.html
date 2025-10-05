@@ -7,10 +7,9 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-  
     gtag('config', 'G-XFRX8T94YG');
   </script>
-  
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>COLD ROOM RADIO</title>
@@ -27,67 +26,80 @@
       --nebula:#133a4d;
       --accent:#6be3ff;
       --muted:#b3c7d6;
+      --glass:rgba(255,255,255,0.08);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;border:0;color:#fff;background:transparent}
+    html,body{height:100%;margin:0;color:#fff;background:transparent}
+    body, p, label, input, textarea, button, h1, h2, h3, h4, h5, h6 {
+      font-family:'Exo 2','IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif !important;
+      font-weight:100;
+      letter-spacing:.5px;
+    }
     a{color:inherit}
 
     /* Background layers */
-    .bg-wrap{position:fixed;inset:0;z-index:-3;overflow:hidden;background:transparent;}
-.bg-wrap::before {
-  display: none;
-}
+    .bg-wrap{position:fixed;inset:0;z-index:-3;overflow:hidden;background:transparent}
     .bg-layer{
       position:absolute;inset:0;
-        background:
-          radial-gradient(ellipse at 20% 80%, rgba(107,227,255,0.10) 0%, transparent 60%),
-          radial-gradient(ellipse at 80% 20%, rgba(19,58,77,0.09) 0%, transparent 70%),
-          radial-gradient(ellipse at 50% 50%, rgba(179,199,214,0.07) 0%, transparent 80%),
-          linear-gradient(135deg, #0a1620 60%, #133a4d 100%);
-        background-size: cover;
-        background-position: center center;
-        opacity: 1;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(107,227,255,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(19,58,77,0.09) 0%, transparent 70%),
+        radial-gradient(ellipse at 50% 50%, rgba(179,199,214,0.07) 0%, transparent 80%),
+        linear-gradient(135deg, var(--bg) 60%, var(--nebula) 100%);
+      background-size:cover;
+      background-position:center;
     }
-    @keyframes drift{0%{transform:translate3d(0,0,0) scale(1.03)}50%{transform:translate3d(-12px,6px,0) scale(1.04)}100%{transform:translate3d(0,0,0) scale(1.03)}}
-    .grain{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);background-size:4px 4px;mix-blend-mode:overlay;opacity:.5}
-
-    /* Layout */
-    .wrap{max-width:1100px;margin:48px auto;padding:36px}
-    header{display:flex;align-items:center;gap:20px}
-    .logo{width:140px;height:140px;flex:0 0 140px;display:flex;align-items:center;justify-content:center}
-    .logo img{max-width:100%;max-height:100%;object-fit:contain}
-    .brand{flex:1}
-    h1, h2, h3, h4, h5, h6, .brand, body, p, label, input, textarea, button {
-      font-family: 'Exo 2', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-      font-weight: 100;
-      letter-spacing: 0.5px;
-    }
-    h1 {
-      font-size: 38px;
-      font-weight: 100;
-      margin: 0;
-      letter-spacing: 1px;
-    }
-    h2 {
-      font-size: 20px;
-      font-weight: 100;
-      margin-bottom: 2px;
-      color: var(--accent);
-    }
-    .brand {
-      font-weight: 100;
-    }
-    
-    section > h2 {
-      margin-bottom: 4px;
-    }
-    section > .contact {
-      margin-top: 2px;
+    .grain{position:absolute;inset:0;pointer-events:none;
+      background-image:radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size:4px 4px;mix-blend-mode:overlay;opacity:.5
     }
 
-    /* Liquid glass player */
-    .player-card{
-      margin-top:22px;padding:20px;border-radius:16px;
+    /* Hero */
+    .hero{
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:24px;
+    }
+    .hero h1{
+      font-size:48px;font-weight:100;letter-spacing:1px;margin:0;
+      text-shadow:0 12px 36px rgba(0,0,0,0.6);
+    }
+    .logo-mark{
+      width:240px;height:240px;margin:0 auto 18px auto;
+      display:flex;align-items:center;justify-content:center;
+      opacity:.9;
+    }
+    .logo-mark img{max-width:100%;max-height:100%;object-fit:contain}
+    .scroll-cue{
+      position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+      font-size:12px;color:var(--muted);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      opacity:.8;
+    }
+    .arrow{
+      width:1px;height:24px;background:linear-gradient(180deg,transparent, var(--accent));
+      box-shadow:0 0 12px rgba(107,227,255,0.6);
+      animation:drip 1.4s ease-in-out infinite;
+    }
+    @keyframes drip{
+      0%{transform:translateY(0);opacity:.4}
+      50%{transform:translateY(6px);opacity:1}
+      100%{transform:translateY(0);opacity:.4}
+    }
+
+    /* Main content container */
+    .wrap{max-width:1100px;margin:0 auto;padding:36px}
+    @media (max-width:720px){.wrap{padding:20px}.hero h1{font-size:32px}.logo-mark{width:90px;height:90px}}
+
+    /* Brand lead */
+    .lead{
+      margin:12px auto 0 auto;max-width:780px;color:#e7f6fb;
+      opacity:.9;line-height:1.7
+    }
+
+    /* Glass card */
+    .card{
+      margin-top:28px;padding:20px;border-radius:16px;
       background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));
       backdrop-filter:blur(14px) saturate(160%);
       -webkit-backdrop-filter:blur(14px) saturate(160%);
@@ -95,109 +107,123 @@
       box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);
     }
 
+    /* Section headings */
+    .section-title{
+      font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);
+    }
+
     /* Plyr overrides */
     .plyr--audio .plyr__controls{background:transparent !important;color:var(--muted)}
     .plyr--audio .plyr__control{
-      background:rgba(255,255,255,0.08) !important;
-      border-radius:50%;transition:background .3s,color .3s;
+      background:var(--glass) !important;border-radius:50%;
+      transition:background .3s,color .3s;
     }
-    .plyr--audio .plyr__control:hover{
-      background:var(--accent) !important;color:#000 !important;
+    .plyr--audio .plyr__control:hover{background:var(--accent) !important;color:#000 !important}
+
+    /* Now playing */
+    .now{
+      max-width:1100px;padding:10px;border-radius:8px;
+      background:rgba(255,255,255,0.05);
     }
+    .now .label{font-size:13px;color:var(--muted)}
+    .now .title{font-weight:600;margin-top:4px}
+    .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
 
     /* Episodes */
-    .episodes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
-    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
-    .episode:hover{transform:translateY(-3px);transition:transform .18s}
+    .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
+    .episode{
+      display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
+      border:1px solid rgba(255,255,255,0.05);cursor:pointer;
+      transition:transform .18s, border-color .18s;
+    }
+    .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
     .episode .meta{flex:1}
     .episode .title{font-weight:600}
     .episode .date{font-size:13px;color:var(--muted)}
+    .episode.disabled{cursor:not-allowed;opacity:.7}
+    .episode .status{font-size:13px;color:var(--muted)}
+    .playhint{font-size:13px;color:var(--muted)}
 
-    /* Form */
-    form.contact{margin-top:24px;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
+    /* Contact form */
+    form.contact{margin-top:12px;padding:16px;border-radius:10px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));
+      border:1px solid rgba(255,255,255,0.03)
+    }
     .field{display:flex;flex-direction:column;margin-bottom:12px}
     label{font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
+    input[type=text],input[type=email],textarea{
+      padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.02);color:#fff
+    }
     textarea{min-height:120px;resize:vertical}
-    button{background:linear-gradient(90deg,var(--accent),#7af5ff);border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+    button{
+      background:linear-gradient(90deg,var(--accent),#7af5ff);
+      border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer
+    }
 
     /* Footer */
-    footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+    footer{margin-top:36px;color:var(--muted);font-size:13px;
+      display:flex;justify-content:space-between;align-items:center}
     .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
-
-    @media (max-width:720px){.wrap{padding:20px;margin:18px auto}.logo{width:90px;height:90px}.brand h1{font-size:26px}}
   </style>
 </head>
 <body>
 
-  <!-- Nebula + grain -->
-  <div class="bg-wrap" aria-hidden>
+  <!-- Nebula + grain background -->
+  <div class="bg-wrap" aria-hidden="true">
     <div class="bg-layer"></div>
     <div class="grain"></div>
   </div>
-
   <canvas id="stars" style="position:fixed;inset:0;z-index:-2;pointer-events:none;"></canvas>
 
-  <main class="wrap">
-    <header>
-      <div class="logo"><img src="logo.png" alt="Cold Room Radio logo"></div>
-      <div class="brand">
-        <h1>COLD ROOM RADIO</h1>
-        <p class="lead">
-          記録と記憶が交差する場所──『パラレル・タイム・アーカイブのCold Room』（PTACR）へようこそ。<br>
-          Perfumeがコールドスリープしているこの時間、ファン同士が静かに記憶と記録を共有し、<br>
-          共に過ごす非公式ファンレイディオ番組です。
-        </p>
-        <div style="margin-top:12px;color:var(--muted)">次回公開: <strong>#1 &lt;cold sleep&gt; — 2025/10/05</strong></div>
-      </div>
-    </header>
-
-  <section class="player-card" style="display:flex;flex-direction:column;gap:16px;">
-    
-    <!-- プレイヤー -->
-    <div id="player-wrap" style="width:100%; max-width:500px;">
-      <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
-        <source id="audio-source" src="" type="audio/mpeg" data-title="#1 <cold sleep>">
-        あなたのブラウザは audio をサポートしていません。
-      </audio>
+  <!-- Hero: shows only brand on first view -->
+  <section class="hero" id="top">
+    <div>
+      <div class="logo-mark"><img src="logo.png" alt="Cold Room Radio logo"></div>
+      <!-- <h1>COLD ROOM RADIO</h1>-->
+      <p class="lead">
+        記録と記憶が交差する場所──『パラレル・タイム・アーカイブのCold Room』（PTACR）へようこそ。<br>
+        Perfumeがコールドスリープしているこの時間、ファン同士が静かに記憶と記録を共有し、<br>
+        共に過ごす非公式ファンレイディオ番組です。
+      </p>
     </div>
-  
-    <!-- 現在のエピソード -->
-    <div style="max-width:500px; padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-      <div style="font-size:13px;color:var(--muted)">現在のエピソード</div>
-      <div id="now-title" style="font-weight:600; margin-top:4px;">#1 &lt;cold sleep&gt;</div>
-      <div id="now-desc" style="font-size:13px;color:var(--muted); margin-top:6px;">
-        公開予定 — audio URL は後で差し替えます。
-      </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <div>スクロールしてみて</div>
+      <div class="arrow"></div>
     </div>
-  
-    <!-- Upcomingエピソードリスト -->
-    <div class="episodes" id="episodes-list" style="display:flex; flex-direction:column; gap:8px; max-width:500px;">
-      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-        <div style="font-weight:600">#2 &lt;dream state&gt;</div>
-        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
-      </div>
-  
-      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-        <div style="font-weight:600">#3 &lt;midnight echoes&gt;</div>
-        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
-      </div>
-  
-      <div class="episode upcoming" style="padding:8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-        <div style="font-weight:600">#4 &lt;silent signal&gt;</div>
-        <div style="font-size:13px;color:var(--muted)">coming soon...</div>
-      </div>
-    </div>
-  
   </section>
 
+  <!-- Main content after scroll -->
+  <main class="wrap" id="main">
+    <!-- Player section -->
+    <section class="card" aria-label="プレイヤー">
+      <h2 class="section-title">プレイヤー</h2>
+      <div id="player-wrap">
+        <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
+          <source id="audio-source" src="" type="audio/mpeg" data-title="#1 <cold sleep>">
+          あなたのブラウザは audio をサポートしていません。
+        </audio>
+      </div>
 
+      <div class="now" style="margin-top:14px;">
+        <div class="label">最新のエピソード</div>
+        <div id="now-title" class="title">#1 &lt;cold sleep&gt;</div>
+        <div id="now-desc" class="desc">公開予定 — audio URL は後で差し替えます。</div>
+      </div>
+    </section>
 
-  <section>
-    <h2 style="font-family:'Exo 2',sans-serif;font-weight:200;font-size:20px;margin-bottom:2px;color:var(--accent)">
-      メッセージを送る
-    </h2>
-    <section>
+    <!-- Episodes section -->
+    <section class="card" aria-label="エピソード一覧">
+      <h2 class="section-title">エピソード</h2>
+      <div class="episodes" id="episodes-list">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- Contact section -->
+    <section class="card" aria-label="メッセージフォーム">
+      <h2 class="section-title">メッセージを送る</h2>
       <form class="contact" id="contact-form" action="https://formsubmit.co/ptacoldroom@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
         <input type="hidden" name="_next" value="/thanks.html">
@@ -219,44 +245,52 @@
           <div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div>
         </div>
       </form>
-    </section>
 
-    <footer>
-      <div>© Cold Room Radio — 非公式ファンレイディオ</div>
-      <div class="socials">
-        <a href="https://x.com/coldroomradio" target="_blank" rel="noopener">X @coldroomradio</a>
-        <a href="https://instagram.com/coldroomradio" target="_blank" rel="noopener">Instagram</a>
-      </div>
-    </footer>
+      <footer>
+        <div>© Cold Room Radio — 非公式ファンレイディオ</div>
+        <div class="socials">
+          <a href="https://x.com/coldroomradio" target="_blank" rel="noopener">X @coldroomradio</a>
+          <a href="https://instagram.com/coldroomradio" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </footer>
+    </section>
   </main>
 
   <!-- Plyr script -->
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
   <script>
-    // Episodes data
     const episodes = [
-      {
-        id:1,
-        title:"<cold sleep>",
-        date:"2025-10-05",
-        desc:"公開予定 — アップロード後に音源URLを差し替えます。",
-        src:"" // Replace with archive.org mp3 URL
-      }
+      { id:1, title:"&lt;cold sleep&gt;", date:"2025-10-05", desc:"公開予定 — アップロード後に音源URLを差し替えます。", src:"" },
+      { id:2, title:"&lt;are you ready!?&gt;", date:"", desc:"coming soon...", src:"" },
+      { id:3, title:"&lt;echoes&gt;", date:"", desc:"coming soon...", src:"" },
+      { id:4, title:"&lt;past memories&gt;", date:"", desc:"coming soon...", src:"" },
+      { id:5, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" }
     ];
 
-    // Populate episode list
+    // Populate episodes list (excluding current if desired)
     const elList = document.getElementById('episodes-list');
-    episodes.forEach(ep=>{
+    episodes.forEach(ep => {
+      if (ep.id === 1) return; // Skip current episode from list if desired
       const div = document.createElement('div');
-      div.className='episode';
-      div.innerHTML = `<div class=meta><div class=title>#${ep.id} ${ep.title}</div><div class=date>${ep.date}</div></div><div style='font-size:13px;color:var(--muted)'>▶︎ 再生</div>`;
-      div.addEventListener('click',()=>loadEpisode(ep));
+      div.className = 'episode' + (!ep.src ? ' disabled' : '');
+      div.innerHTML = `
+        <div class="meta">
+          <div class="title">#${ep.id} ${ep.title}</div>
+          <div class="date">${ep.date || ''}</div>
+        </div>
+        <div class="status">${ep.desc}</div>
+      `;
+      if (ep.src) {
+        div.addEventListener('click', () => loadEpisode(ep));
+      }
       elList.appendChild(div);
     });
 
     // Initialize Plyr
-    const player = new Plyr('#audio-player', {controls:['play','progress','current-time','mute','volume']});
+    const plyr = new Plyr('#audio-player', {
+      controls:['play','progress','current-time','mute','volume']
+    });
 
     function loadEpisode(ep){
       const srcEl = document.getElementById('audio-source');
@@ -267,16 +301,21 @@
       }
       srcEl.src = ep.src;
       audioEl.load();
-      player.play();
+      plyr.play();
       document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
-      document.getElementById('now-desc').textContent = ep.desc;
+      document.getElementById('now-desc').textContent = ep.desc || '';
+      // Analytics
+      const label = ep.title;
+      gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
+      console.log(`Play event sent: ${label}`);
     }
 
-    if(episodes[0] && episodes[0].src){
+    // Auto-load #1 if src set
+    if (episodes[0] && episodes[0].src) {
       loadEpisode(episodes[0]);
     }
 
-    // Super lightweight twinkling starfield
+    // Starfield
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -316,20 +355,14 @@
       requestAnimationFrame(drawStars);
     }
     drawStars();
-  </script>
-  <script>
+
+    // Send play event with label from <source> if user hits play directly
     document.addEventListener('DOMContentLoaded', function() {
       const player = document.getElementById('audio-player');
-    
       player.addEventListener('play', () => {
         const source = player.querySelector('source');
-        const label = source.getAttribute('data-title') || source.src.split('/').pop();
-    
-        gtag('event', 'play', {
-          'event_category': 'audio',
-          'event_label': label
-        });
-    
+        const label = source.getAttribute('data-title') || (source.src ? source.src.split('/').pop() : '#1 <cold sleep>');
+        gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
         console.log(`Play event sent: ${label}`);
       });
     });
