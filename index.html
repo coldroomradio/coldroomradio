@@ -300,24 +300,20 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const players = document.querySelectorAll('audio');
+      const player = document.getElementById('audio-player');
     
-      players.forEach(player => {
-        player.addEventListener('play', () => {
-          // ファイル名 or data-title属性を取得
-          const label = player.getAttribute('data-title') || player.currentSrc.split('/').pop();
+      player.addEventListener('play', () => {
+        const source = player.querySelector('source');
+        const label = source.getAttribute('data-title') || source.src.split('/').pop();
     
-          // Google Analyticsにイベント送信
-          gtag('event', 'play', {
-            'event_category': 'audio',
-            'event_label': label
-          });
-    
-          console.log(`Play event sent: ${label}`);
+        gtag('event', 'play', {
+          'event_category': 'audio',
+          'event_label': label
         });
+    
+        console.log(`Play event sent: ${label}`);
       });
     });
   </script>
-
 </body>
 </html>
