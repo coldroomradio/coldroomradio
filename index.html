@@ -14,10 +14,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>COLD ROOM RADIO</title>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;600&display=swap" rel="stylesheet">
-
-  <!-- Plyr (player UI) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
 
   <style>
@@ -51,21 +48,13 @@
         linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%);
       background-blend-mode: screen, overlay, normal;
       background-size: 200% 200%;
-      background-position: 0% 0%;
       animation: drift 25s ease-in-out infinite alternate;
     }
 
-    /* 🌌 Subtle drifting animation */
     @keyframes drift {
-      0% {
-        background-position: 0% 0%;
-      }
-      50% {
-        background-position: 50% 50%;
-      }
-      100% {
-        background-position: 100% 100%;
-      }
+      0% {background-position: 0% 0%;}
+      50% {background-position: 50% 50%;}
+      100% {background-position: 100% 100%;}
     }
 
     .grain{position:absolute;inset:0;pointer-events:none;
@@ -73,144 +62,95 @@
       background-size:4px 4px;mix-blend-mode:overlay;opacity:.5
     }
 
-    /* Hero */
-    .hero{
-      min-height:100vh;
-      display:flex;align-items:center;justify-content:center;
-      text-align:center;padding:24px;
-    }
-    .hero h1{
-      font-size:48px;font-weight:100;letter-spacing:1px;margin:0;
-      text-shadow:0 12px 36px rgba(0,0,0,0.6);
-    }
-    .logo-mark {
-    width: min(40vw, 240px);  
-    aspect-ratio: 1 / 1;      
-    margin: 0 auto 18px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: .9;
-    }
-    .logo-mark img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    }
-    .scroll-cue{
-      position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
-      font-size:12px;color:var(--muted);
-      display:flex;flex-direction:column;align-items:center;gap:8px;
-      opacity:.8;
-    }
-    .arrow{
-      width:1px;height:24px;background:linear-gradient(180deg,transparent, var(--accent));
-      box-shadow:0 0 12px rgba(107,227,255,0.6);
-      animation:drip 1.4s ease-in-out infinite;
-    }
-    @keyframes drip{
-      0%{transform:translateY(0);opacity:.4}
-      50%{transform:translateY(6px);opacity:1}
-      100%{transform:translateY(0);opacity:.4}
-    }
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
+    .hero h1{font-size:48px;font-weight:100;letter-spacing:1px;margin:0;text-shadow:0 12px 36px rgba(0,0,0,0.6);}
+    .logo-mark{width:min(40vw,240px);aspect-ratio:1/1;margin:0 auto 18px auto;display:flex;align-items:center;justify-content:center;opacity:.9;}
+    .logo-mark img{max-width:100%;max-height:100%;object-fit:contain}
+    .scroll-cue{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.8;}
+    .arrow{width:1px;height:24px;background:linear-gradient(180deg,transparent,var(--accent));box-shadow:0 0 12px rgba(107,227,255,0.6);animation:drip 1.4s ease-in-out infinite;}
+    @keyframes drip{0%{transform:translateY(0);opacity:.4}50%{transform:translateY(6px);opacity:1}100%{transform:translateY(0);opacity:.4}}
 
-    /* Main content container */
     .wrap{max-width:1100px;margin:0 auto;padding:36px}
-    @media (max-width:720px){
-    .wrap{padding:20px}
-    .hero h1{font-size:32px}
-    }
-    /* Brand lead */
-    .lead{
-      margin:12px auto 0 auto;max-width:780px;color:#e7f6fb;
-      opacity:.9;line-height:1.7
-    }
+    @media (max-width:720px){.wrap{padding:20px}.hero h1{font-size:32px}}
 
-    /* Glass card */
-    .card{
-      margin-top:28px;padding:20px;border-radius:16px;
-      background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));
-      backdrop-filter:blur(14px) saturate(160%);
-      -webkit-backdrop-filter:blur(14px) saturate(160%);
-      border:1px solid rgba(255,255,255,0.12);
-      box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);
-    }
-
-    /* Section headings */
-    .section-title{
-      font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);
-    }
-
-    /* Plyr overrides */
+    .lead{margin:12px auto 0 auto;max-width:780px;color:#e7f6fb;opacity:.9;line-height:1.7}
+    .card{margin-top:28px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);}
+    .section-title{font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);}
     .plyr--audio .plyr__controls{background:transparent !important;color:var(--muted)}
-    .plyr--audio .plyr__control{
-      background:var(--glass) !important;border-radius:50%;
-      transition:background .3s,color .3s;
-    }
+    .plyr--audio .plyr__control{background:var(--glass) !important;border-radius:50%;transition:background .3s,color .3s;}
     .plyr--audio .plyr__control:hover{background:var(--accent) !important;color:#000 !important}
 
-    /* Now playing */
-    .now{
-      max-width:1100px;padding:10px;border-radius:8px;
-      background:rgba(255,255,255,0.05);
-    }
+    .now{max-width:1100px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);}
     .now .label{font-size:13px;color:var(--muted)}
     .now .title{font-weight:600;margin-top:4px}
     .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
 
-    /* Episodes */
     .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
-    .episode{
-      display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;
-      background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
-      border:1px solid rgba(255,255,255,0.05);cursor:pointer;
-      transition:transform .18s, border-color .18s;
-    }
+    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
     .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
     .episode .meta{flex:1}
     .episode .title{font-weight:600}
     .episode .date{font-size:13px;color:var(--muted)}
     .episode.disabled{cursor:not-allowed;opacity:.7}
     .episode .status{font-size:13px;color:var(--muted)}
-    .playhint{font-size:13px;color:var(--muted)}
 
-    /* Contact form */
-    form.contact{margin-top:12px;padding:16px;border-radius:10px;
-      background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));
-      border:1px solid rgba(255,255,255,0.03)
-    }
+    form.contact{margin-top:12px;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
     .field{display:flex;flex-direction:column;margin-bottom:12px}
     label{font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],input[type=email],textarea{
-      padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);
-      background:rgba(255,255,255,0.02);color:#fff
-    }
+    input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
     textarea{min-height:120px;resize:vertical}
-    button{
-      background:linear-gradient(90deg,var(--accent),#7af5ff);
-      border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer
-    }
+    button{background:linear-gradient(90deg,var(--accent),#7af5ff);border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
 
-    /* Footer */
-    footer{margin-top:36px;color:var(--muted);font-size:13px;
-      display:flex;justify-content:space-between;align-items:center}
+    footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
     .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
+
+    /* FAQ Accordion (light version) */
+    .faq-item {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 0;
+    }
+    .faq-question {
+    cursor: pointer;
+    font-weight: 300;
+    color: var(--accent);
+    transition: color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+    .faq-question::after {
+    content: "+";
+    color: var(--muted);
+    transition: transform 0.3s;
+    }
+    .faq-item.active .faq-question::after {
+    content: "−";
+    color: var(--accent);
+    }
+    .faq-answer {
+    display: none;
+    margin-top: 6px;
+    line-height: 1.8;
+    color: #e7f6fb;
+    font-weight: 200;
+    opacity: 0.9;
+    }
+    .faq-item.active .faq-answer {
+    display: block;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Nebula + grain background -->
   <div class="bg-wrap" aria-hidden="true">
     <div class="bg-layer"></div>
     <div class="grain"></div>
   </div>
   <canvas id="stars" style="position:fixed;inset:0;z-index:-2;pointer-events:none;"></canvas>
 
-  <!-- Hero: shows only brand on first view -->
   <section class="hero" id="top">
     <div>
       <div class="logo-mark"><img src="logo.png" alt="Cold Room Radio logo"></div>
-      <!-- <h1>COLD ROOM RADIO</h1>-->
       <p class="lead">
         記録と記憶が交差する場所──<br>
         『Parallel・Time・ArchiveのCold Room』へようこそ。<br>
@@ -224,223 +164,223 @@
     </div>
   </section>
 
-  <!-- Main content after scroll -->
   <main class="wrap" id="main">
-    <!-- Player section -->
     <section class="card" aria-label="プレイヤー">
       <h2 class="section-title">プレイヤー</h2>
       <div id="player-wrap">
         <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
-          <source id="audio-source" src="" type="audio/mpeg" data-title="#1 <cold sleep>">
+          <source id="audio-source" src="https://archive.org/details/cold-room-radio-episode-01-coldsleep?" type="audio/mpeg" data-title="#1 <cold sleep>">
           あなたのブラウザは audio をサポートしていません。
         </audio>
       </div>
-
       <div class="now" style="margin-top:14px;">
         <div class="label">最新のエピソード</div>
         <div id="now-title" class="title">#1 &lt;cold sleep&gt;</div>
-        <div id="now-desc" class="desc">公開予定 — audio URL は後で差し替えます。</div>
+        <div id="now-desc" class="desc">2025/10/10 公開</div>
       </div>
     </section>
 
-    <!-- Episodes section -->
     <section class="card" aria-label="エピソード一覧">
       <h2 class="section-title">エピソード</h2>
-      <div class="episodes" id="episodes-list">
-        <!-- Populated by JS -->
-      </div>
+      <div class="episodes" id="episodes-list"></div>
     </section>
 
-    <!-- Contact section -->
     <section class="card" aria-label="メッセージフォーム">
       <h2 class="section-title">メッセージを送る</h2>
       <form class="contact" id="contact-form" action="https://formsubmit.co/ptacoldroom%40gmail.com" method="POST">
         <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
         <input type="hidden" name="_next" value="https://coldroomradio.github.io/coldroomradio/thanks.html">
-
-        <div class="field">
-          <label for="name">お名前（任意）</label>
-          <input id="name" name="name" type="text" placeholder="ラジオネームでOK">
-        </div>
-        <div class="field">
-          <label for="email">メールアドレス（任意）</label>
-          <input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ">
-        </div>
-        <div class="field">
-          <label for="message">メッセージ</label>
-          <textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button type="submit">送信する</button>
-          <div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div>
-        </div>
+        <div class="field"><label for="name">お名前（任意）</label><input id="name" name="name" type="text" placeholder="ラジオネームでOK"></div>
+        <div class="field"><label for="email">メールアドレス（任意）</label><input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ"></div>
+        <div class="field"><label for="message">メッセージ</label><textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea></div>
+        <div style="display:flex;gap:8px;align-items:center"><button type="submit">送信する</button><div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div></div>
       </form>
 
       <footer>
         <div>© Cold Room Radio — 非公式ファンレイディオ</div>
-        <div class="socials">
-          <a href="https://x.com/coldroomradio" target="_blank" rel="noopener">X @coldroomradio</a>
-          <a href="https://instagram.com/coldroomradio" target="_blank" rel="noopener">Instagram</a>
-        </div>
+        <div class="socials"><a href="https://x.com/coldroomradio" target="_blank">X @coldroomradio</a><a href="https://instagram.com/coldroomradio" target="_blank">Instagram</a></div>
       </footer>
+    </section>
+
+    <!-- FAQ -->
+    <section class="card" aria-label="よくある質問">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq">
+        <div class="faq-item"><div class="faq-question">え、これ何？</div><div class="faq-answer">Cold Room Radioは Perfume がコールドスリープ中の期間も好きな気持ちを交わせる場として立ち上げた、<br>「非公式」のオンラインレイディオ番組です。</br></div></div>
+        <div class="faq-item"><div class="faq-question">何かのサブスク？お金かかるの？</div><div class="faq-answer">多くの方と「気持ちを交わしたい」「想いを共有したい」という思いから、<br>広告は一切入れず、無料でお聴きいただけるようにしています。</br>スポンサーやPR枠は設けていません。<br>ただし、番組トーク内で純粋に好きなものや良いと思ったものを紹介することはあります。</div></div>
+        <div class="faq-item"><div class="faq-question">今後有料コンテンツかなんか作ってそこに誘導する感じ？</div><div class="faq-answer">いいえ。このホームページで聴ける番組だけです。</div></div>
+        <div class="faq-item"><div class="faq-question">へー...ってか誰？</div><div class="faq-answer">ただのファンです。関係者ではありません。</div></div>
+        <div class="faq-item"><div class="faq-question">で、そのParallel Time Archiveって何？</div><div class="faq-answer">時空を超えて旅する者たちの記録を保管する機関です。<br>(私たちに馴染みのある文字を使って設定を入れてみたかっただけです)</br></div></div>
+        <div class="faq-item"><div class="faq-question">Cold Roomとは？</div><div class="faq-answer">Perfumeのコールドcapsuleが保管されている場所です。<br>私たちがこのRoomでスリープ明けまで暖かく3人を見守っているという独自の設定です。</br></div></div>
+        <div class="faq-item"><div class="faq-question">新しいのはいつアップされるの？</div><div class="faq-answer">週一の更新を予定しています。<br>お手紙やイラストの投稿が多い時は、もう少し頻繁に更新するかもしれません。</br></div></div>
+      </div>
     </section>
   </main>
 
-  <!-- Plyr script -->
-  <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
-
-  <script>
-    const episodes = [
-      { id:1, title:"&lt;cold sleep&gt;", date:"2025-10-05", desc:"公開予定 — アップロード後に音源URLを差し替えます。", src:"" },
-      { id:2, title:"&lt;are you ready!?&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:3, title:"&lt;echoes&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:4, title:"&lt;past memories&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:5, title:"&lt;restart&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:6, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:7, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:8, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:9, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-      { id:10, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" }
-    ];
-
-    // Populate episodes list (excluding current if desired)
-    const elList = document.getElementById('episodes-list');
-    episodes.forEach(ep => {
-      if (ep.id === 1) return; // Skip current episode from list if desired
-      const div = document.createElement('div');
-      div.className = 'episode' + (!ep.src ? ' disabled' : '');
-      div.innerHTML = `
-        <div class="meta">
-          <div class="title">#${ep.id} ${ep.title}</div>
-          <div class="date">${ep.date || ''}</div>
-        </div>
-        <div class="status">${ep.desc}</div>
-      `;
-      if (ep.src) {
-        div.addEventListener('click', () => loadEpisode(ep));
-      }
-      elList.appendChild(div);
+    <script>
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+        q.parentElement.classList.toggle('active');
+        });
     });
+    </script>
 
-    // Initialize Plyr
-    const plyr = new Plyr('#audio-player', {
-      controls:['play','progress','current-time','mute','volume']
-    });
 
-    function loadEpisode(ep){
-      const srcEl = document.getElementById('audio-source');
-      const audioEl = document.getElementById('audio-player');
-      if(!ep.src){
-        alert('このエピソードの音源URLがまだ設定されていません。管理画面でsrcを差し替えてください。');
-        return;
-      }
-      srcEl.src = ep.src;
-      audioEl.load();
-      plyr.play();
-      document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
-      document.getElementById('now-desc').textContent = ep.desc || '';
-      // Analytics
-      const label = ep.title;
-      gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
-      console.log(`Play event sent: ${label}`);
-    }
+    <!-- Plyr script -->
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
-    // Auto-load #1 if src set
-    if (episodes[0] && episodes[0].src) {
-      loadEpisode(episodes[0]);
-    }
+    <script>
+        const episodes = [
+        { id:1, title:"&lt;cold sleep&gt;", date:"2025/10/10", desc:"2015/10/10 公開", src:"https://archive.org/details/cold-room-radio-episode-01-coldsleep?" },
+        { id:2, title:"&lt;are you ready!?&gt;", date:"2026/1/1 公開予定", desc:"coming soon...", src:"" },
+        { id:3, title:"&lt;echoes&gt;", date:"2026/1/4 公開予定", desc:"coming soon...", src:"" },
+        { id:4, title:"&lt;past memories&gt;", date:"2026/1/11 公開予定", desc:"coming soon...", src:"" },
+        { id:5, title:"&lt;restart&gt;", date:"2026/1/18 公開予定", desc:"coming soon...", src:"" },
+        { id:6, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
+        { id:7, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
+        { id:8, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
+        { id:9, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
+        { id:10, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" }
+        ];
 
-    // Starfield
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    function resizeStars() {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
-      stars = Array.from({length: 90}, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: Math.random() * 0.8 + 0.2,
-        tw: Math.random() * Math.PI * 2,
-        tws: Math.random() * 0.03 + 0.01
-      }));
-    }
-    window.addEventListener('resize', resizeStars);
-    resizeStars();
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(s => {
-        s.tw += s.tws;
-        const alpha = 0.5 + 0.5 * Math.sin(s.tw);
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff';
-        ctx.shadowColor = '#2bd1ea';
-        ctx.shadowBlur = 8 * alpha;
-        ctx.fill();
-        ctx.restore();
-      });
-      requestAnimationFrame(drawStars);
-    }
-    drawStars();
+        // Populate episodes list (excluding current if desired)
+        const elList = document.getElementById('episodes-list');
+        episodes.forEach(ep => {
+        if (ep.id === 1) return; // Skip current episode from list if desired
+        const div = document.createElement('div');
+        div.className = 'episode' + (!ep.src ? ' disabled' : '');
+        div.innerHTML = `
+            <div class="meta">
+            <div class="title">#${ep.id} ${ep.title}</div>
+            <div class="date">${ep.date || ''}</div>
+            </div>
+            <div class="status">${ep.desc}</div>
+        `;
+        if (ep.src) {
+            div.addEventListener('click', () => loadEpisode(ep));
+        }
+        elList.appendChild(div);
+        });
 
-    // Send play event with label from <source> if user hits play directly
-    document.addEventListener('DOMContentLoaded', function() {
-      const player = document.getElementById('audio-player');
-      player.addEventListener('play', () => {
-        const source = player.querySelector('source');
-        const label = source.getAttribute('data-title') || (source.src ? source.src.split('/').pop() : '#1 <cold sleep>');
+        // Initialize Plyr
+        const plyr = new Plyr('#audio-player', {
+        controls:['play','progress','current-time','mute','volume']
+        });
+
+        function loadEpisode(ep){
+        const srcEl = document.getElementById('audio-source');
+        const audioEl = document.getElementById('audio-player');
+        if(!ep.src){
+            alert('このエピソードの音源URLがまだ設定されていません。管理画面でsrcを差し替えてください。');
+            return;
+        }
+        srcEl.src = ep.src;
+        audioEl.load();
+        plyr.play();
+        document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
+        document.getElementById('now-desc').textContent = ep.desc || '';
+        // Analytics
+        const label = ep.title;
         gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
         console.log(`Play event sent: ${label}`);
-      });
-    });
-  </script>
+        }
 
-  <script>
-    // Randomize nebula background each time
-    document.addEventListener('DOMContentLoaded', () => {
-      const layer = document.querySelector('.bg-layer');
-      if (!layer) return;
+        // Auto-load #1 if src set
+        if (episodes[0] && episodes[0].src) {
+        loadEpisode(episodes[0]);
+        }
 
-      // Define some soft nebula colors
-      const colors = [
-        'rgba(255,90,255,0.08)',
-        'rgba(0,255,190,0.06)',
-        'rgba(180,100,255,0.07)',
-        'rgba(120,255,180,0.05)',
-        'rgba(255,180,255,0.04)'
-      ];
+        // Starfield
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resizeStars() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+        stars = Array.from({length: 90}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 0.8 + 0.2,
+            tw: Math.random() * Math.PI * 2,
+            tws: Math.random() * 0.03 + 0.01
+        }));
+        }
+        window.addEventListener('resize', resizeStars);
+        resizeStars();
+        function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => {
+            s.tw += s.tws;
+            const alpha = 0.5 + 0.5 * Math.sin(s.tw);
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = '#2bd1ea';
+            ctx.shadowBlur = 8 * alpha;
+            ctx.fill();
+            ctx.restore();
+        });
+        requestAnimationFrame(drawStars);
+        }
+        drawStars();
 
-      // Shuffle helper
-      const shuffled = colors.sort(() => 0.5 - Math.random());
+        // Send play event with label from <source> if user hits play directly
+        document.addEventListener('DOMContentLoaded', function() {
+        const player = document.getElementById('audio-player');
+        player.addEventListener('play', () => {
+            const source = player.querySelector('source');
+            const label = source.getAttribute('data-title') || (source.src ? source.src.split('/').pop() : '#1 <cold sleep>');
+            gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
+            console.log(`Play event sent: ${label}`);
+        });
+        });
+    </script>
 
-      // Generate random gradient positions
-      const randomGradient = (color) => {
-        const x = Math.floor(Math.random() * 100);
-        const y = Math.floor(Math.random() * 100);
-        const size = Math.floor(Math.random() * 40 + 60);
-        return `radial-gradient(ellipse at ${x}% ${y}%, ${color}, transparent ${size}%)`;
-      };
+    <script>
+        // Randomize nebula background each time
+        document.addEventListener('DOMContentLoaded', () => {
+        const layer = document.querySelector('.bg-layer');
+        if (!layer) return;
 
-      const randomGradients = shuffled.map(c => randomGradient(c)).join(',');
+        // Define some soft nebula colors
+        const colors = [
+            'rgba(255,90,255,0.08)',
+            'rgba(0,255,190,0.06)',
+            'rgba(180,100,255,0.07)',
+            'rgba(120,255,180,0.05)',
+            'rgba(255,180,255,0.04)'
+        ];
 
-      // Keep your dark space base gradient
-      const darkSpace = 'linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%)';
+        // Shuffle helper
+        const shuffled = colors.sort(() => 0.5 - Math.random());
 
-      // Apply the randomized combination
-      layer.style.background = randomGradients + ',' + darkSpace;
-      layer.style.backgroundBlendMode = 'screen, overlay, normal';
-      layer.style.backgroundSize = '200% 200%';
-      layer.style.animation = 'drift 25s ease-in-out infinite alternate';
-    });
-  </script>
+        // Generate random gradient positions
+        const randomGradient = (color) => {
+            const x = Math.floor(Math.random() * 100);
+            const y = Math.floor(Math.random() * 100);
+            const size = Math.floor(Math.random() * 40 + 60);
+            return `radial-gradient(ellipse at ${x}% ${y}%, ${color}, transparent ${size}%)`;
+        };
+
+        const randomGradients = shuffled.map(c => randomGradient(c)).join(',');
+
+        // Keep your dark space base gradient
+        const darkSpace = 'linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%)';
+
+        // Apply the randomized combination
+        layer.style.background = randomGradients + ',' + darkSpace;
+        layer.style.backgroundBlendMode = 'screen, overlay, normal';
+        layer.style.backgroundSize = '200% 200%';
+        layer.style.animation = 'drift 25s ease-in-out infinite alternate';
+        });
+    </script>
 
 </body>
 </html>
