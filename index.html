@@ -230,7 +230,7 @@
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
     <script>
-        const episodes = [
+      const episodes = [
         { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" },
         { id:2, title:"&lt;are you ready!?&gt;", date:"2026/1/1 公開予定", desc:"coming soon...", src:"" },
         { id:3, title:"&lt;echoes&gt;", date:"2026/1/4 公開予定", desc:"coming soon...", src:"" },
@@ -241,56 +241,48 @@
         { id:8, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
         { id:9, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
         { id:10, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" }
-        ];
+      ];
 
-        // Populate episodes list (excluding current if desired)
-        const elList = document.getElementById('episodes-list');
-        episodes.forEach(ep => {
-        if (ep.id === 1) return; // Skip current episode from list if desired
+      const elList = document.getElementById('episodes-list');
+      episodes.forEach(ep => {
+        if (ep.id === 1) return;
         const div = document.createElement('div');
         div.className = 'episode' + (!ep.src ? ' disabled' : '');
         div.innerHTML = `
-            <div class="meta">
+          <div class="meta">
             <div class="title">#${ep.id} ${ep.title}</div>
             <div class="date">${ep.date || ''}</div>
-            </div>
-            <div class="status">${ep.desc}</div>
+          </div>
+          <div class="status">${ep.desc}</div>
         `;
-        if (ep.src) {
-            div.addEventListener('click', () => loadEpisode(ep));
-        }
+        if (ep.src) div.addEventListener('click', () => loadEpisode(ep));
         elList.appendChild(div);
-        });
+      });
 
-        // Initialize Plyr
-        const plyr = new Plyr('#audio-player', {
-        controls:['play','progress','current-time','mute','volume']
-        });
+      const plyr = new Plyr('#audio-player', {
+        controls: ['play','progress','current-time','mute','volume']
+      });
 
-        function loadEpisode(ep){
+      function loadEpisode(ep){
         const srcEl = document.getElementById('audio-source');
         const audioEl = document.getElementById('audio-player');
         if(!ep.src){
-            alert('このエピソードの音源URLがまだ設定されていません。管理画面でsrcを差し替えてください。');
-            return;
+          alert('このエピソードの音源URLがまだ設定されていません。');
+          return;
         }
         srcEl.src = ep.src;
         audioEl.load();
         plyr.play();
         document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
         document.getElementById('now-desc').textContent = ep.desc || '';
-        // Analytics
-        const label = ep.title;
-        gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
-        console.log(`Play event sent: ${label}`);
-        }
+        gtag('event', 'play', { event_category:'audio', event_label: ep.title });
+      }
 
-        // Auto-load #1 if src set
-        if (episodes[0] && episodes[0].src) {
+      if (episodes[0] && episodes[0].src) {
         loadEpisode(episodes[0]);
-        }
+      }
 
-        // Starfield
+      // Starfield
         const canvas = document.getElementById('stars');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -331,55 +323,68 @@
         }
         drawStars();
 
-        // Send play event with label from <source> if user hits play directly
-        document.addEventListener('DOMContentLoaded', function() {
+      /* ------------------------------
+         🎧 GA4 Enhanced Audio Tracking
+         ------------------------------ */
+      document.addEventListener('DOMContentLoaded', function() {
         const player = document.getElementById('audio-player');
-        player.addEventListener('play', () => {
-            const source = player.querySelector('source');
-            const label = source.getAttribute('data-title') || (source.src ? source.src.split('/').pop() : '#1 <cold sleep>');
-            gtag('event', 'play', { 'event_category': 'audio', 'event_label': label });
-            console.log(`Play event sent: ${label}`);
+        const plyrInstance = plyr;
+        let checkpoints = [25, 50, 75, 90];
+        let sent = {};
+
+        function sendGA(eventName, data = {}) {
+          const title = document.getElementById('now-title')?.textContent || player.currentSrc.split('/').pop();
+          gtag('event', eventName, Object.assign({
+            event_category: 'audio',
+            event_label: title
+          }, data));
+          console.log('GA event:', eventName, data);
+        }
+
+        plyrInstance.on('play', () => sendGA('play', { position: player.currentTime }));
+        plyrInstance.on('pause', () => sendGA('pause', { position: player.currentTime }));
+        plyrInstance.on('seeked', () => sendGA('seek', { position: player.currentTime }));
+        plyrInstance.on('ended', () => sendGA('complete', { duration: player.duration }));
+
+        plyrInstance.on('timeupdate', () => {
+          if (!player.duration) return;
+          const percent = (player.currentTime / player.duration) * 100;
+          checkpoints.forEach(cp => {
+            if (percent >= cp && !sent[cp]) {
+              sendGA('progress', { milestone: cp });
+              sent[cp] = true;
+            }
+          });
         });
-        });
+      });
     </script>
 
+    <!-- Random background script (unchanged) -->
     <script>
-        // Randomize nebula background each time
-        document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         const layer = document.querySelector('.bg-layer');
         if (!layer) return;
-
-        // Define some soft nebula colors
         const colors = [
-            'rgba(255,90,255,0.08)',
-            'rgba(0,255,190,0.06)',
-            'rgba(180,100,255,0.07)',
-            'rgba(120,255,180,0.05)',
-            'rgba(255,180,255,0.04)'
+          'rgba(255,90,255,0.08)',
+          'rgba(0,255,190,0.06)',
+          'rgba(180,100,255,0.07)',
+          'rgba(120,255,180,0.05)',
+          'rgba(255,180,255,0.04)'
         ];
-
-        // Shuffle helper
         const shuffled = colors.sort(() => 0.5 - Math.random());
-
-        // Generate random gradient positions
         const randomGradient = (color) => {
-            const x = Math.floor(Math.random() * 100);
-            const y = Math.floor(Math.random() * 100);
-            const size = Math.floor(Math.random() * 40 + 60);
-            return `radial-gradient(ellipse at ${x}% ${y}%, ${color}, transparent ${size}%)`;
+          const x = Math.floor(Math.random() * 100);
+          const y = Math.floor(Math.random() * 100);
+          const size = Math.floor(Math.random() * 40 + 60);
+          return `radial-gradient(ellipse at ${x}% ${y}%, ${color}, transparent ${size}%)`;
         };
-
         const randomGradients = shuffled.map(c => randomGradient(c)).join(',');
-
-        // Keep your dark space base gradient
         const darkSpace = 'linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%)';
-
-        // Apply the randomized combination
         layer.style.background = randomGradients + ',' + darkSpace;
         layer.style.backgroundBlendMode = 'screen, overlay, normal';
         layer.style.backgroundSize = '200% 200%';
         layer.style.animation = 'drift 25s ease-in-out infinite alternate';
-        });
+      });
     </script>
 
 </body>
