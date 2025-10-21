@@ -187,12 +187,13 @@
 
     <section class="card" aria-label="メッセージフォーム">
       <h2 class="section-title">メッセージを送る</h2>
-      <form class="contact" id="contact-form" action="https://formsubmit.co/ptacoldroom%40gmail.com" method="POST">
+        <form class="contact" id="contact-form" action="https://formspree.io/f/mzzjqrwy" method="POST">
         <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
         <input type="hidden" name="_next" value="https://coldroomradio.github.io/coldroomradio/thanks.html">
         <div class="field"><label for="name">お名前（任意）</label><input id="name" name="name" type="text" placeholder="ラジオネームでOK"></div>
         <div class="field"><label for="email">メールアドレス（任意）</label><input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ"></div>
         <div class="field"><label for="message">メッセージ</label><textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea></div>
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
         <div style="display:flex;gap:8px;align-items:center"><button type="submit">送信する</button><div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div></div>
       </form>
 
@@ -233,9 +234,9 @@
       const episodes = [
         { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" },
         { id:2, title:"&lt;are you ready!?&gt;", date:"2026/1/1 公開予定", desc:"coming soon...", src:"" },
-        { id:3, title:"&lt;echoes&gt;", date:"2026/1/4 公開予定", desc:"coming soon...", src:"" },
-        { id:4, title:"&lt;past memories&gt;", date:"2026/1/11 公開予定", desc:"coming soon...", src:"" },
-        { id:5, title:"&lt;restart&gt;", date:"2026/1/18 公開予定", desc:"coming soon...", src:"" },
+        { id:3, title:"&lt;echoes&gt;", date:"2026/1/11 公開予定", desc:"coming soon...", src:"" },
+        { id:4, title:"&lt;past memories&gt;", date:"2026/1/18 公開予定", desc:"coming soon...", src:"" },
+        { id:5, title:"&lt;restart&gt;", date:"2026/1/25 公開予定", desc:"coming soon...", src:"" },
         { id:6, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
         { id:7, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
         { id:8, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
@@ -324,7 +325,7 @@
         drawStars();
 
       /* ------------------------------
-         🎧 GA4 Enhanced Audio Tracking
+          GA4 Enhanced Audio Tracking
          ------------------------------ */
       document.addEventListener('DOMContentLoaded', function() {
         const player = document.getElementById('audio-player');
@@ -359,7 +360,7 @@
       });
     </script>
 
-    <!-- Random background script (unchanged) -->
+    <!-- Random background script -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const layer = document.querySelector('.bg-layer');
@@ -386,6 +387,21 @@
         layer.style.animation = 'drift 25s ease-in-out infinite alternate';
       });
     </script>
+  
+    <script>
+    const msgBox = document.getElementById('message');
+    msgBox?.addEventListener('input', () => {
+      localStorage.setItem('draftMessage', msgBox.value);
+    });
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('draftMessage');
+      if (saved) msgBox.value = saved;
+    });
+    document.getElementById('contact-form')?.addEventListener('submit', () => {
+      localStorage.removeItem('draftMessage');
+    });
+  </script>
+
 
 </body>
 </html>
