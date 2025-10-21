@@ -84,7 +84,85 @@
     .now .label{font-size:13px;color:var(--muted)}
     .now .title{font-weight:600;margin-top:4px}
     .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
+    
+    .now, .episode { position: relative; }
 
+    .heart-btn {
+      position: relative;
+      z-index: 10;               
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: inline-flex;      
+      justify-content: center;
+      align-items: center;
+    }
+
+    .heart-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      transition: all .25s ease;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+    }
+
+    /* hover feedback */
+    .heart-btn:hover svg {
+      stroke: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* active (liked) state */
+    .heart-btn.active svg {
+      fill: #ff7ca8;
+      stroke: #ff3f72;
+      filter: drop-shadow(0 0 6px rgba(255,90,150,0.7));
+      transform: scale(1.15);
+    }
+
+    .heart-btn svg {
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+    }
+
+    .heart-btn.disabled {
+      opacity: 0.4;               /* faded look */
+      cursor: not-allowed;        /* shows it's inactive */
+      pointer-events: none;       /* disables clicking */
+    }
+
+    .heart-btn.disabled svg {
+      stroke: #aaa;               /* lighter color */
+      fill: none;
+    }
+
+    .sparkle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      --spark-color: var(--accent);
+      background: radial-gradient(circle,
+        var(--spark-color) 0%,
+        rgba(255,255,255,0.7) 40%,
+        transparent 70%);
+      box-shadow: 0 0 8px var(--spark-color),
+                  0 0 16px rgba(107,227,255,0.6);
+      animation: sparkleFloat 2.4s ease-out forwards,
+                sparkleColor 2.4s ease-out forwards;
+    }
+
+    @keyframes sparkleFloat {
+      0%   { transform: translate(0,1) scale(0.6); opacity: 1; }
+      50%  { opacity: 0.9; }
+      100% {
+        transform: translate(var(--x,0), var(--y,-80px)) scale(0.6)
+                  rotate(calc(var(--curve,0) * 1deg));
+        opacity: 0;
+      }
+    }
+    
     .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
     .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
     .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
@@ -93,6 +171,32 @@
     .episode .date{font-size:13px;color:var(--muted)}
     .episode.disabled{cursor:not-allowed;opacity:.7}
     .episode .status{font-size:13px;color:var(--muted)}
+
+    /* Heart wrapper - right side with subtle separator */
+    .heart-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Larger touch target on small screens */
+    @media (max-width:720px) {
+      .heart-btn { padding: 14px; }
+      .heart-btn svg { width: 22px; height: 22px; }
+      .heart-wrap { padding-left: 16px; }
+    }
+
+    /* Now-playing horizontal layout */
+    .now { display: block; }
+    .now .label { display:block; width:100%; }
+    .now .bar { display:flex; align-items:center; gap:12px; margin-top:8px }
+    .now .heart-wrap { align-items: center; }
+    .now .now-meta { display:flex; flex-direction:column; gap:6px; flex:1 }
+    @media (min-width:721px) {
+      .now { display:block }
+    }
 
     form.contact{margin-top:12px;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
     .field{display:flex;flex-direction:column;margin-bottom:12px}
@@ -104,7 +208,7 @@
     footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
     .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
 
-    /* FAQ Accordion (light version) */
+    /* FAQ */
     .faq-item {
     border-top: 1px solid rgba(255,255,255,0.08);
     padding: 10px 0;
@@ -175,8 +279,19 @@
       </div>
       <div class="now" style="margin-top:14px;">
         <div class="label">最新のエピソード</div>
-        <div id="now-title" class="title">#1 <cold sleep></div>
-        <div id="now-desc" class="desc">2025/10/10 公開</div>
+        <div class="bar">
+          <div class="now-meta">
+            <div id="now-title" class="title">#1 <cold sleep></div>
+            <div id="now-desc" class="desc">2025/10/10 公開</div>
+          </div>
+          <div class="heart-wrap">
+            <button class="heart-btn" data-episode="current">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 21s-6.9-5.5-9.5-9.1C.9 9.6 1.2 6.3 3.6 4.4 5.7 2.8 8.6 3.1 10.3 5c.3.4.6.7.9 1 .3-.3.6-.6.9-1 1.7-1.9 4.6-2.2 6.7-.6 2.4 1.9 2.7 5.2 1.1 7.5C18.9 15.5 12 21 12 21z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -232,37 +347,150 @@
 
     <script>
       const episodes = [
-        { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" },
-        { id:2, title:"&lt;are you ready!?&gt;", date:"2026/1/1 公開予定", desc:"coming soon...", src:"" },
-        { id:3, title:"&lt;echoes&gt;", date:"2026/1/11 公開予定", desc:"coming soon...", src:"" },
-        { id:4, title:"&lt;past memories&gt;", date:"2026/1/18 公開予定", desc:"coming soon...", src:"" },
-        { id:5, title:"&lt;restart&gt;", date:"2026/1/25 公開予定", desc:"coming soon...", src:"" },
-        { id:6, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-        { id:7, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-        { id:8, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-        { id:9, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" },
-        { id:10, title:"&lt;...&gt;", date:"", desc:"coming soon...", src:"" }
+        { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3", released:true  },
+        { id:2, title:"<are you ready!?>", date:"2026/1/1 公開予定", desc:"coming soon...", src:"", released:false },
+        { id:3, title:"<echoes>", date:"2026/1/11 公開予定", desc:"coming soon...", src:"", released:false },
+        { id:4, title:"<past memories>", date:"2026/1/18 公開予定", desc:"coming soon...", src:"", released:false },
+        { id:5, title:"<restart>", date:"2026/1/25 公開予定", desc:"coming soon...", src:"", released:false  },
+        { id:6, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
+        { id:7, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
+        { id:8, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
+        { id:9, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
+        { id:10, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  }
       ];
 
       const elList = document.getElementById('episodes-list');
       episodes.forEach(ep => {
-        if (ep.id === 1) return;
         const div = document.createElement('div');
-        div.className = 'episode' + (!ep.src ? ' disabled' : '');
-        div.innerHTML = `
-          <div class="meta">
-            <div class="title">#${ep.id} ${ep.title}</div>
-            <div class="date">${ep.date || ''}</div>
-          </div>
-          <div class="status">${ep.desc}</div>
+          div.className = 'episode' + (!ep.released ? ' disabled' : '');
+          div.dataset.episode = `ep${ep.id}`;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = `#${ep.id} ${ep.title}`;
+
+        const date = document.createElement('div');
+        date.className = 'date';
+        date.textContent = ep.date || '';
+
+        meta.appendChild(title);
+        meta.appendChild(date);
+
+        const status = document.createElement('div');
+        status.className = 'status';
+        status.textContent = ep.desc;
+
+  // place heart to the far right to avoid accidental play clicks
+  const heartWrap = document.createElement('div');
+  heartWrap.className = 'heart-wrap';
+  const heart = document.createElement('button');
+  heart.className = 'heart-btn' + (!ep.released ? ' disabled' : '');
+  // store a concise key so now and list can reference same liked key
+  const episodeKey = `ep${ep.id}`;
+  heart.dataset.episode = episodeKey;
+  // prevent heart clicks from bubbling and triggering the episode click (which loads the episode)
+  heart.addEventListener('click', (e) => { e.stopPropagation(); });
+        heart.innerHTML = `
+          <svg viewBox="0 0 24 24">
+            <path d="M12 21s-6.9-5.5-9.5-9.1C.9 9.6 1.2 6.3 3.6 4.4 5.7 2.8 8.6 3.1 10.3 5c.3.4.6.7.9 1 .3-.3.6-.6.9-1 1.7-1.9 4.6-2.2 6.7-.6 2.4 1.9 2.7 5.2 1.1 7.5C18.9 15.5 12 21 12 21z"/>
+          </svg>
         `;
-        if (ep.src) div.addEventListener('click', () => loadEpisode(ep));
+
+  heartWrap.appendChild(heart);
+        div.appendChild(meta);
+        div.appendChild(status);
+        div.appendChild(heartWrap);
+
+        // Only make clickable if released
+        if (ep.released && ep.src) {
+          div.addEventListener('click', () => loadEpisode(ep));
+        }
+
         elList.appendChild(div);
       });
+
 
       const plyr = new Plyr('#audio-player', {
         controls: ['play','progress','current-time','mute','volume']
       });
+
+  // track currently playing row key so we can hide it from the list
+  let currentPlayingKey = null;
+
+  // helper: set visual state of all hearts for an episodeKey
+      function syncHeartState(episodeKey, label) {
+        const key = `liked_${episodeKey}`;
+        const liked = localStorage.getItem(key) === 'true';
+        document.querySelectorAll(`.heart-btn[data-episode="${episodeKey}"]`).forEach(b => {
+          if (liked) b.classList.add('active'); else b.classList.remove('active');
+        });
+      }
+
+      // helper: toggle like state and sync UI + analytics + sparkles on the clicked button
+      function toggleLike(episodeKey, label, clickedBtn) {
+        const key = `liked_${episodeKey}`;
+        const willLike = !(localStorage.getItem(key) === 'true');
+        if (willLike) localStorage.setItem(key, 'true'); else localStorage.removeItem(key);
+        // update all UI
+        syncHeartState(episodeKey, label);
+
+        // Send GA4-friendly event and push helpful debug info
+        try {
+          const gaEventName = willLike ? 'like' : 'like_removed';
+          const gaParams = {
+            content_id: episodeKey,
+            content_title: label || episodeKey,
+            content_type: 'episode',
+            method: 'button'
+          };
+
+          if (window.gtag) {
+            gtag('event', gaEventName, gaParams);
+            console.debug('GA event sent:', gaEventName, gaParams);
+          } else {
+            console.debug('gtag() not available — would send:', gaEventName, gaParams);
+          }
+
+          // also push to dataLayer for debugging/inspection
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push(Object.assign({ event: gaEventName, liked: willLike }, gaParams));
+        } catch (e) {
+          console.warn('Error sending GA event', e);
+        }
+
+        if (willLike && clickedBtn) {
+          // sparkles on clicked button
+          for (let i = 0; i < 20; i++) {
+            const s = document.createElement('span');
+            s.className = 'sparkle';
+
+            const rect = clickedBtn.getBoundingClientRect();
+            s.style.left = Math.random() * rect.width + 'px';
+            s.style.top = Math.random() * rect.height + 'px';
+
+            s.style.setProperty('--x', `${(Math.random()-0.5)*80}px`);
+            s.style.setProperty('--y', `${-60 - Math.random()*60}px`);
+            s.style.setProperty('--curve', `${(Math.random()-0.5)*40}`);
+
+            const size = Math.random()*5 + 3;
+            s.style.width = s.style.height = `${size}px`;
+
+            const colors = [
+              `radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0.6) 40%, transparent 70%)`,
+              `radial-gradient(circle, #9fdfff 0%, rgba(255,255,255,0.5) 40%, transparent 70%)`,
+              `radial-gradient(circle, #7ac8ff 0%, rgba(255,255,255,0.5) 40%, transparent 70%)`,
+              `radial-gradient(circle, var(--accent) 0%, rgba(255,180,255,0.4) 40%, transparent 70%)`
+            ];
+            s.style.background = colors[Math.floor(Math.random()*colors.length)];
+
+            clickedBtn.appendChild(s);
+            setTimeout(() => s.remove(), 2600);
+          }
+        }
+      }
 
       function loadEpisode(ep){
         const srcEl = document.getElementById('audio-source');
@@ -277,11 +505,34 @@
         document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
         document.getElementById('now-desc').textContent = ep.desc || '';
         gtag('event', 'play', { event_category:'audio', event_label: ep.title });
+
+        // Update Now Heart Button
+        const nowHeart = document.querySelector('.now .heart-btn');
+        const episodeKey = `ep${ep.id}`;
+
+        // set a data-key so now heart maps to this episode
+        nowHeart.dataset.episode = episodeKey;
+        nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
+
+        syncHeartState(episodeKey, ep.title);
+
+        // hide the matching episode row from the list to avoid duplicate entry
+        try {
+          if (currentPlayingKey && currentPlayingKey !== episodeKey) {
+            const prev = document.querySelector(`.episode[data-episode="${currentPlayingKey}"]`);
+            if (prev) prev.style.display = '';
+          }
+          const el = document.querySelector(`.episode[data-episode="${episodeKey}"]`);
+          if (el) el.style.display = 'none';
+          currentPlayingKey = episodeKey;
+        } catch (err) {
+          console.warn('Could not hide/show episode row', err);
+        }
       }
 
-      if (episodes[0] && episodes[0].src) {
-        loadEpisode(episodes[0]);
-      }
+      const latestReleased = episodes.findLast(ep => ep.released && ep.src);
+      if (latestReleased) loadEpisode(latestReleased);
+
 
       // Starfield
         const canvas = document.getElementById('stars');
@@ -402,6 +653,23 @@
     });
   </script>
 
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // initialize hearts: wire up clicks and hydrate from localStorage using global helpers
+    document.querySelectorAll('.heart-btn').forEach(btn => {
+      const episodeKey = btn.dataset.episode || 'current';
+      const saved = localStorage.getItem(`liked_${episodeKey}`);
+      if (saved === 'true') btn.classList.add('active');
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = btn.dataset.episode || 'current';
+        const label = btn.dataset.title || btn.getAttribute('aria-label') || key;
+        toggleLike(key, label, btn);
+      });
+    });
+  });
+  </script>
 
 </body>
 </html>
