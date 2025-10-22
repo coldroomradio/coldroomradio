@@ -85,83 +85,80 @@
     .now .title{font-weight:600;margin-top:4px}
     .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
     
-    .now, .episode { position: relative; }
+  .now, .episode { position: relative; }
 
-    .heart-btn {
-      position: relative;
-      z-index: 10;               
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      display: inline-flex;      
-      justify-content: center;
-      align-items: center;
-    }
-
-    .heart-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: #fff;
-      fill: none;
-      stroke-width: 2;
-      transition: all .25s ease;
-      filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
-    }
-
-    /* hover feedback */
-    .heart-btn:hover svg {
-      stroke: var(--accent);
-      transform: scale(1.1);
-    }
-
-    /* active (liked) state */
-    .heart-btn.active svg {
-      fill: #ff7ca8;
-      stroke: #ff3f72;
-      filter: drop-shadow(0 0 6px rgba(255,90,150,0.7));
-      transform: scale(1.15);
-    }
-
-    .heart-btn svg {
-      filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
-    }
-
-    .heart-btn.disabled {
-      opacity: 0.4;               /* faded look */
-      cursor: not-allowed;        /* shows it's inactive */
-      pointer-events: none;       /* disables clicking */
-    }
-
-    .heart-btn.disabled svg {
-      stroke: #aaa;               /* lighter color */
-      fill: none;
-    }
-
+    /* Sparkle visuals */
     .sparkle {
       position: absolute;
-      border-radius: 50%;
+  border-radius: 50%;
       pointer-events: none;
       --spark-color: var(--accent);
-      background: radial-gradient(circle,
-        var(--spark-color) 0%,
-        rgba(255,255,255,0.7) 40%,
-        transparent 70%);
+  background: radial-gradient(circle, rgba(255,250,230,0.98) 0%, rgba(255,255,255,0.85) 40%, transparent 70%);
       box-shadow: 0 0 8px var(--spark-color),
                   0 0 16px rgba(107,227,255,0.6);
-      animation: sparkleFloat 2.4s ease-out forwards,
-                sparkleColor 2.4s ease-out forwards;
+  animation: sparkleFloat var(--spark-duration,2.4s) ease-out forwards;
+  opacity: 0;
     }
 
     @keyframes sparkleFloat {
-      0%   { transform: translate(0,1) scale(0.6); opacity: 1; }
-      50%  { opacity: 0.9; }
+      0% {
+        transform: translate(0,6px) scale(0.4);
+        opacity: 0;
+      }
+      8% {
+        opacity: 0.18;
+      }
+      60% {
+        opacity: 0.9;
+      }
       100% {
-        transform: translate(var(--x,0), var(--y,-80px)) scale(0.6)
-                  rotate(calc(var(--curve,0) * 1deg));
+        transform: translate(var(--x,0), var(--y,-80px)) scale(0.6) rotate(calc(var(--curve,0) * 1deg));
         opacity: 0;
       }
     }
+
+    .sparkle-circle, .sparkle-triangle {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .sparkle-circle { background: radial-gradient(circle, #fff, transparent 60%); border-radius: 50%; }
+
+    .sparkle, .sparkle * {
+      overflow: visible !important;
+    }
+
+    .heart-btn { overflow: visible; }
+
+  /* Triangle sparkles */
+  .sparkle-triangle {
+      width: 0;
+      height: 0;
+      transform-origin: center bottom;
+      filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));
+      z-index:10000;
+      opacity:0;
+      animation: sparkleFloat var(--spark-duration,2.4s) ease-out forwards;
+      background: transparent;
+      border-left: 0 solid transparent;
+      border-right: 0 solid transparent;
+      border-bottom: 0 solid transparent;
+    }
+
+    .sparkle.sparkle-triangle {
+      background: transparent !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background-image: none !important;
+    }
+
+  /* Triangle colors */
+    .tri-blue { border-bottom-color: rgba(107,227,255,0.96) !important; }
+    .tri-soft { border-bottom-color: rgba(255, 245, 138, 0.92) !important; }
+    .tri-pink { border-bottom-color: rgba(255,180,255,0.92) !important; }
+
     
     .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
     .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
@@ -172,7 +169,7 @@
     .episode.disabled{cursor:not-allowed;opacity:.7}
     .episode .status{font-size:13px;color:var(--muted)}
 
-    /* Heart wrapper - right side with subtle separator */
+    /* Heart wrapper */
     .heart-wrap {
       margin-left: auto;
       display: flex;
@@ -180,6 +177,35 @@
       padding-left: 12px;
       border-left: 1px solid rgba(255,255,255,0.06);
     }
+
+    .heart-btn {
+      position: relative;
+      z-index: 10;
+  background: transparent !important;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .heart-btn svg { width:18px; height:18px; display:block; }
+  .heart-btn:focus { outline: none; }
+  .heart-btn:focus-visible { box-shadow: 0 0 0 4px rgba(107,227,255,0.08); border-radius: 8px; }
+  .heart-btn svg { shape-rendering: geometricPrecision; }
+    .heart-btn svg path { fill: none; stroke: #fff; stroke-width: 1; transition: all .18s ease; }
+    .heart-btn:hover svg path { stroke: var(--accent); transform: scale(1.06); }
+    .heart-btn.active svg path { fill: #ff7ca8; stroke: #ff3f72; filter: drop-shadow(0 0 6px rgba(255,90,150,0.6)); transform: scale(1.08); }
+
+    .heart-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: transparent !important;
+    }
+
+    .heart-btn.disabled svg { stroke: #aaa; fill: none; }
 
     /* Larger touch target on small screens */
     @media (max-width:720px) {
@@ -426,6 +452,9 @@
         const liked = localStorage.getItem(key) === 'true';
         document.querySelectorAll(`.heart-btn[data-episode="${episodeKey}"]`).forEach(b => {
           if (liked) b.classList.add('active'); else b.classList.remove('active');
+          // expose pressed state for assistive tech
+          try { b.setAttribute('aria-pressed', liked ? 'true' : 'false'); } catch(e){}
+          if (label && !b.getAttribute('aria-label')) b.setAttribute('aria-label', label + ' をいいね');
         });
       }
 
@@ -461,34 +490,133 @@
           console.warn('Error sending GA event', e);
         }
 
-        if (willLike && clickedBtn) {
-          // sparkles on clicked button
-          for (let i = 0; i < 20; i++) {
-            const s = document.createElement('span');
-            s.className = 'sparkle';
+  if (willLike && clickedBtn) {
+          // pooled sparkles: create/get nodes and animate via CSS variables
+          const POOL_MAX = 40;
+          window.__sparklePool = window.__sparklePool || [];
 
-            const rect = clickedBtn.getBoundingClientRect();
-            s.style.left = Math.random() * rect.width + 'px';
-            s.style.top = Math.random() * rect.height + 'px';
-
-            s.style.setProperty('--x', `${(Math.random()-0.5)*80}px`);
-            s.style.setProperty('--y', `${-60 - Math.random()*60}px`);
-            s.style.setProperty('--curve', `${(Math.random()-0.5)*40}`);
-
-            const size = Math.random()*5 + 3;
-            s.style.width = s.style.height = `${size}px`;
-
-            const colors = [
-              `radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0.6) 40%, transparent 70%)`,
-              `radial-gradient(circle, #9fdfff 0%, rgba(255,255,255,0.5) 40%, transparent 70%)`,
-              `radial-gradient(circle, #7ac8ff 0%, rgba(255,255,255,0.5) 40%, transparent 70%)`,
-              `radial-gradient(circle, var(--accent) 0%, rgba(255,180,255,0.4) 40%, transparent 70%)`
-            ];
-            s.style.background = colors[Math.floor(Math.random()*colors.length)];
-
-            clickedBtn.appendChild(s);
-            setTimeout(() => s.remove(), 2600);
+          function createNode() {
+            const el = document.createElement('div');
+            el.className = 'sparkle';
+            el.style.position = 'absolute';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '9999';
+            document.body.appendChild(el);
+            return el;
           }
+
+          function getNode() {
+            for (let n of window.__sparklePool) if (!n.__inUse) { n.__inUse = true; return n; }
+            if (window.__sparklePool.length < POOL_MAX) {
+              const n = createNode(); n.__inUse = true; window.__sparklePool.push(n); return n;
+            }
+            const n = window.__sparklePool[Math.floor(Math.random() * window.__sparklePool.length)];
+            n.__inUse = true; return n;
+          }
+
+          function releaseNode(n) {
+            // reset to neutral state so node can be reused safely
+            n.className = 'sparkle';
+            n.style.left = '';
+            n.style.top = '';
+            n.style.width = '';
+            n.style.height = '';
+            n.style.borderLeft = '';
+            n.style.borderRight = '';
+            n.style.borderBottom = '';
+            n.style.background = '';
+            n.innerHTML = '';
+            n.style.animationDelay = '';
+            n.style.animationDuration = '';
+            n.style.transform = '';
+            n.style.zIndex = '';
+            n.classList.remove('sparkle-triangle');
+            if (n.__releaseTimeout) { clearTimeout(n.__releaseTimeout); n.__releaseTimeout = null; }
+            n.__inUse = false;
+          }
+
+          const rect = clickedBtn.getBoundingClientRect();
+          const docOffsetX = window.pageXOffset || document.documentElement.scrollLeft || 0;
+          const docOffsetY = window.pageYOffset || document.documentElement.scrollTop || 0;
+          const baseX = rect.left + rect.width / 2 + docOffsetX;
+          const baseY = rect.top + rect.height / 2 + docOffsetY;
+
+          const emitCount = 14;
+          for (let i = 0; i < emitCount; i++) {
+            const node = getNode();
+            const isTriangle = Math.random() < 0.42;
+            if (isTriangle) node.classList.add('sparkle-triangle'); else node.classList.add('sparkle-circle');
+
+            // start near the heart center with a tiny jitter so particles overlap nicely
+            const jitterX = (Math.random() - 0.5) * rect.width * 0.3;
+            const jitterY = (Math.random() - 1.5) * rect.height * 0.3;
+            node.style.left = (baseX + jitterX) + 'px';
+            node.style.top = (baseY + jitterY) + 'px';
+
+            const size = Math.random() * 12 + 3;
+            if (isTriangle) {
+              const variant = Math.random();
+              const colors = [
+                'rgba(107,227,255,0.96)',
+                'rgba(159,223,255,0.92)',
+                'rgba(255,180,255,0.92)'
+              ];
+              const fill = colors[Math.floor(Math.random()*colors.length)];
+
+              node.style.width = `${Math.round(size+2)}px`;
+              node.style.height = `${Math.round(size+2)}px`;
+              node.style.background = 'transparent';
+              node.style.borderLeft = '';
+              node.style.borderRight = '';
+              node.style.borderBottom = '';
+
+              if (variant < 0.5) {
+                const w = Math.round(size+2);
+                const h = Math.round(size+2);
+                const strokeW = Math.max(1, Math.round((size+2) * 0.18));
+                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="${w/2},0 ${w},${h} 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+              } else {
+                const w = Math.round(size+2);
+                const h = Math.round(size+2);
+                const strokeW = Math.max(1, Math.round((size+2) * 0.18));
+                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 ${w},0 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+              }
+              // mark as triangle for animation rules
+              node.classList.add('sparkle-triangle');
+            } else {
+              // smaller, single-color round sparkles (soft warm white)
+              const small = Math.max(2, size * 0.7);
+              node.style.width = `${small}px`;
+              node.style.height = `${small}px`;
+              node.style.background = `radial-gradient(circle, rgba(255,250,230,0.98) 0%, rgba(255,255,255,0.7) 48%, transparent 75%)`;
+            }
+
+            // emit outward from the heart: pick an angle and distance, convert to x/y
+            const angle = Math.random() * Math.PI * 2;
+            const minDist = 28 + Math.random() * 8;
+            const maxDist = 60 + Math.random() * 30;
+            const dist = minDist + Math.random() * (maxDist - minDist);
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist;
+            node.style.setProperty('--x', dx + 'px');
+            node.style.setProperty('--y', dy + 'px');
+            node.style.setProperty('--curve', (Math.random() * 56 - 28).toString());
+
+            // slightly longer, more consistent durations so sparks linger
+            const dur = 2.4 + Math.random() * 0.8; // 2.4 - 3.2s
+            // Ensure animation restarts when node is reused: clear animation, force reflow, then set durations
+            node.style.animation = 'none';
+            // force reflow
+            void node.offsetWidth;
+            node.style.animationDuration = `${dur}s`;
+            node.style.animationDelay = `${Math.random() * 0.35}s`;
+            // allow CSS to pick up the base animation name again
+            node.style.animation = '';
+
+            if (node.__releaseTimeout) clearTimeout(node.__releaseTimeout);
+            node.__releaseTimeout = setTimeout(() => releaseNode(node), (dur + 0.6) * 1000 + Math.random() * 300);
+          }
+          try { clickedBtn.setAttribute('aria-pressed', willLike ? 'true' : 'false'); } catch(e){}
         }
       }
 
@@ -513,6 +641,11 @@
         // set a data-key so now heart maps to this episode
         nowHeart.dataset.episode = episodeKey;
         nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
+  if (!nowHeart.getAttribute('aria-label')) nowHeart.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
+
+  // ensure aria-pressed matches storage
+  const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
+  try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
 
         syncHeartState(episodeKey, ep.title);
 
