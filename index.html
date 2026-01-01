@@ -369,23 +369,45 @@
 
 
     <!-- Plyr script -->
-    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
-    <script>
-      const episodes = [
-        { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3", released:true  },
-        { id:2, title:"<are you ready!?>", date:"2026/1/1 公開予定", desc:"2026/1/1", src:"https://dn710400.ca.archive.org/0/items/coldroomradio_ep02_areyouready/coldroomradio_ep02_areyouready.mp3", released:true },
-        { id:3, title:"<echoes>", date:"2026/1/11 公開予定", desc:"coming soon...", src:"", released:false },
-        { id:4, title:"<past memories>", date:"2026/1/18 公開予定", desc:"coming soon...", src:"", released:false },
-        { id:5, title:"<K(p000003)>", date:"2026/2/1 公開予定", desc:"coming soon...", src:"", released:false  },
-        { id:6, title:"<N(p000002)>", date:"2026/2/8 公開予定", desc:"coming soon...", src:"", released:false  },
-        { id:7, title:"<A(p000001)>", date:"2026/2/15 公開予定", desc:"coming soon...", src:"", released:false  },
-        { id:8, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
-        { id:9, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  },
-        { id:10, title:"<...>", date:"", desc:"coming soon...", src:"", released:false  }
-      ];
+  <!-- episodes data (editable): loads window.EPISODE_LIST -->
+  <script src="./episode-list.html"></script>
 
+  <script>
+      // Load episodes from external `episode-list.html` which defines window.EPISODE_LIST
+      // If that file isn't present or EPISODE_LIST is not defined, fall back to an empty list.
+      function parseReleaseAtToDate(s) {
+        if (!s) return null;
+        try {
+          // Let the browser parse an ISO string with timezone if provided
+          const d = new Date(s);
+          if (!isNaN(d)) return d;
+        } catch (e) {}
+        // fallback: try yyyy/mm/dd or yyyy-mm-dd
+        const parts = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+        if (parts) return new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), 0, 0, 0);
+        return null;
+      }
+
+      function nowInJST() {
+        // return a Date object representing current time
+        return new Date();
+      }
+
+      const rawEpisodes = window.EPISODE_LIST || [];
       const elList = document.getElementById('episodes-list');
+      const episodes = rawEpisodes.map(ep => {
+        // compute released by comparing now to release_at (if present)
+        const releaseDate = parseReleaseAtToDate(ep.release_at || ep.date || null);
+        let released = !!ep.released;
+        if (releaseDate) {
+          // release when current time is >= releaseDate; releaseDate may include timezone offset
+          released = (nowInJST().getTime() >= releaseDate.getTime());
+        }
+        return Object.assign({}, ep, { released });
+      });
+
       episodes.forEach(ep => {
         const div = document.createElement('div');
           div.className = 'episode' + (!ep.released ? ' disabled' : '');
@@ -629,25 +651,26 @@
         }
         srcEl.src = ep.src;
         audioEl.load();
-        plyr.play();
-        document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
-        document.getElementById('now-desc').textContent = ep.desc || '';
-        gtag('event', 'play', { event_category:'audio', event_label: ep.title });
+          // set playing key before initiating play so analytics can read it
+          const episodeKey = `ep${ep.id}`;
+          window.currentPlayingKey = episodeKey;
+          // update Now Heart Button
+          const nowHeart = document.querySelector('.now .heart-btn');
+          if (nowHeart) {
+            nowHeart.dataset.episode = episodeKey;
+            nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
+            if (!nowHeart.getAttribute('aria-label')) nowHeart.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
+            const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
+            try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
+          }
+          plyr.play();
+  document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
+  document.getElementById('now-desc').textContent = ep.desc || '';
+  // send a lightweight GA event for the manual load (older code sent a play here)
+  try { if (window.gtag) gtag('event', 'load_episode', { event_category:'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch(e){}
 
-        // Update Now Heart Button
-        const nowHeart = document.querySelector('.now .heart-btn');
-        const episodeKey = `ep${ep.id}`;
-
-        // set a data-key so now heart maps to this episode
-        nowHeart.dataset.episode = episodeKey;
-        nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
-  if (!nowHeart.getAttribute('aria-label')) nowHeart.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
-
-  // ensure aria-pressed matches storage
-  const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
-  try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
-
-        syncHeartState(episodeKey, ep.title);
+  // Sync UI state for the now heart (already set above). Ensure all trackers see the same key.
+  syncHeartState(episodeKey, ep.title);
 
         // hide the matching episode row from the list to avoid duplicate entry
         try {
@@ -658,13 +681,18 @@
           const el = document.querySelector(`.episode[data-episode="${episodeKey}"]`);
           if (el) el.style.display = 'none';
           currentPlayingKey = episodeKey;
+          window.currentPlayingKey = episodeKey;
         } catch (err) {
           console.warn('Could not hide/show episode row', err);
         }
       }
 
       const latestReleased = episodes.findLast(ep => ep.released && ep.src);
-      if (latestReleased) loadEpisode(latestReleased);
+      if (latestReleased) {
+        // pre-set currentPlayingKey so the initial automatic play/load is associated
+        window.currentPlayingKey = `ep${latestReleased.id}`;
+        loadEpisode(latestReleased);
+      }
 
 
       // Starfield
@@ -709,37 +737,81 @@
         drawStars();
 
       /* ------------------------------
-          GA4 Enhanced Audio Tracking
+          GA4 Enhanced Audio Tracking (episode-linked)
          ------------------------------ */
       document.addEventListener('DOMContentLoaded', function() {
         const player = document.getElementById('audio-player');
         const plyrInstance = plyr;
-        let checkpoints = [25, 50, 75, 90];
-        let sent = {};
+        const checkpoints = [25, 50, 75, 90];
+        const sent = {};
+        let lastTime = 0;
+        let listenStart = null;
 
-        function sendGA(eventName, data = {}) {
-          const title = document.getElementById('now-title')?.textContent || player.currentSrc.split('/').pop();
-          gtag('event', eventName, Object.assign({
-            event_category: 'audio',
-            event_label: title
-          }, data));
-          console.log('GA event:', eventName, data);
+        function getEpisodeInfo() {
+          // prefer explicit currentPlayingKey, then now heart dataset, then fallback to source filename
+          const nowHeart = document.querySelector('.now .heart-btn');
+          const srcEl = document.getElementById('audio-source');
+          const title = document.getElementById('now-title')?.textContent || srcEl?.dataset?.title || srcEl?.src?.split('/').pop() || 'unknown';
+          const id = (window.currentPlayingKey) || (nowHeart && nowHeart.dataset && nowHeart.dataset.episode) || null;
+          return { id: id || 'unknown', title };
         }
 
-        plyrInstance.on('play', () => sendGA('play', { position: player.currentTime }));
-        plyrInstance.on('pause', () => sendGA('pause', { position: player.currentTime }));
-        plyrInstance.on('seeked', () => sendGA('seek', { position: player.currentTime }));
-        plyrInstance.on('ended', () => sendGA('complete', { duration: player.duration }));
+        function pushGtag(eventName, params = {}) {
+          // ensure we always attach helpful defaults
+          const ep = getEpisodeInfo();
+          const base = {
+            event_category: 'audio',
+            content_type: 'episode',
+            content_id: ep.id,
+            content_title: ep.title
+          };
+          const payload = Object.assign({}, base, params);
+          if (window.gtag) {
+            try { gtag('event', eventName, payload); } catch (e) { console.warn('gtag error', e); }
+          }
+          // always push to dataLayer for visibility even if gtag isn't ready
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push(Object.assign({ event: eventName }, payload));
+          console.debug('GA event:', eventName, payload);
+        }
+
+        function sendListenTime() {
+          if (!listenStart) return;
+          const sec = Math.floor((Date.now() - listenStart) / 1000);
+          listenStart = null;
+          if (sec > 2) pushGtag('listen_time', { seconds_listened: sec });
+        }
+
+        // Wire player events with episode-aware params
+        plyrInstance.on('play', () => {
+          listenStart = Date.now();
+          pushGtag('play', { position_sec: Math.floor(player.currentTime) });
+        });
+
+        plyrInstance.on('pause', () => {
+          sendListenTime();
+          pushGtag('pause', { position_sec: Math.floor(player.currentTime) });
+        });
+
+        plyrInstance.on('seeked', () => {
+          pushGtag('seek', { from_sec: Math.floor(lastTime), to_sec: Math.floor(player.currentTime) });
+        });
+
+        plyrInstance.on('ended', () => {
+          sendListenTime();
+          pushGtag('complete', { duration_sec: Math.floor(player.duration), position_sec: Math.floor(player.currentTime) });
+        });
 
         plyrInstance.on('timeupdate', () => {
           if (!player.duration) return;
           const percent = (player.currentTime / player.duration) * 100;
           checkpoints.forEach(cp => {
             if (percent >= cp && !sent[cp]) {
-              sendGA('progress', { milestone: cp });
+              pushGtag('progress', { milestone_pct: cp, position_sec: Math.floor(player.currentTime) });
               sent[cp] = true;
             }
           });
+          lastTime = player.currentTime;
         });
       });
     </script>
