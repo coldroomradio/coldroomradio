@@ -1,9 +1,9 @@
-<!-- episode-list.html
-This file exposes a global `EPISODE_LIST` array for the main index to consume.
-Edit this file to add/update episodes. Use `release_at` in ISO 8601 (JST) or a date string.
-Example release_at: "2026-01-18T00:00:00+09:00" (midnight Japan time)
--->
-<script>
+
+// episode-list.js
+// This file exposes a global `EPISODE_LIST` array for the main index to consume.
+// Edit this file to add/update episodes. Use `release_at` in ISO 8601 (JST) or a date string.
+// Example release_at: "2026-01-18T00:00:00+09:00" (midnight Japan time)
+
 window.EPISODE_LIST = [
   { id:1, title:"<cold sleep>", date:"2025/10/10", desc:"2025/10/10 公開", src:"https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3", release_at: "2025-10-10T00:00:00+09:00" },
   { id:2, title:"<are you ready!?>", date:"2026/01/01", desc:"2026/1/1", src:"https://dn710400.ca.archive.org/0/items/coldroomradio_ep02_areyouready/coldroomradio_ep02_areyouready.mp3", release_at: "2026-01-01T00:00:00+09:00" },
@@ -16,4 +16,3 @@ window.EPISODE_LIST = [
   { id:9, title:"<...>", date:"", desc:"coming soon...", src:"", release_at: null },
   { id:10, title:"<...>", date:"", desc:"coming soon...", src:"", release_at: null }
 ];
-</script>
