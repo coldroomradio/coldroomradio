@@ -164,8 +164,10 @@
     .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
     .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
     .episode .meta{flex:1}
-    .episode .title{font-weight:600}
-    .episode .date{font-size:13px;color:var(--muted)}
+  .episode .title{font-weight:600}
+  /* title row: title left, date right */
+  .episode .title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .episode .date{font-size:13px;color:var(--muted);margin-left:8px;flex:0 0 auto}
     .episode.disabled{cursor:not-allowed;opacity:.7}
     .episode .status{font-size:13px;color:var(--muted)}
 
@@ -307,7 +309,10 @@
         <div class="label">最新のエピソード</div>
         <div class="bar">
           <div class="now-meta">
-            <div id="now-title" class="title">#1 <cold sleep></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <div id="now-title" class="title">#1 <cold sleep></div>
+              <div id="now-date" class="date">2025/10/10</div>
+            </div>
             <div id="now-desc" class="desc">2025/10/10 公開</div>
           </div>
           <div class="heart-wrap">
@@ -416,20 +421,26 @@
         const meta = document.createElement('div');
         meta.className = 'meta';
 
-        const title = document.createElement('div');
-        title.className = 'title';
-        title.textContent = `#${ep.id} ${ep.title}`;
+  const title = document.createElement('div');
+  title.className = 'title';
+  title.textContent = `#${ep.id} ${ep.title}`;
 
-        const date = document.createElement('div');
-        date.className = 'date';
-        date.textContent = ep.date || '';
+  const status = document.createElement('div');
+  status.className = 'status';
+  status.textContent = ep.desc;
 
-        meta.appendChild(title);
-        meta.appendChild(date);
+  const date = document.createElement('div');
+  date.className = 'date';
+  date.textContent = ep.date || '';
 
-        const status = document.createElement('div');
-        status.className = 'status';
-        status.textContent = ep.desc;
+  // title-row groups title (left) and date (right)
+  const titleRow = document.createElement('div');
+  titleRow.className = 'title-row';
+  titleRow.appendChild(title);
+  titleRow.appendChild(date);
+
+  meta.appendChild(titleRow);
+  meta.appendChild(status);
 
   // place heart to the far right to avoid accidental play clicks
   const heartWrap = document.createElement('div');
@@ -448,8 +459,7 @@
         `;
 
   heartWrap.appendChild(heart);
-        div.appendChild(meta);
-        div.appendChild(status);
+  div.appendChild(meta);
         div.appendChild(heartWrap);
 
         // Only make clickable if released
@@ -663,9 +673,12 @@
             const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
             try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
           }
-          plyr.play();
+  // populate now panel with title, date and desc
   document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
   document.getElementById('now-desc').textContent = ep.desc || '';
+  // ensure the now panel displays the date as well
+  const nowDateEl = document.getElementById('now-date');
+  if (nowDateEl) nowDateEl.textContent = ep.date || '';
   // send a lightweight GA event for the manual load (older code sent a play here)
   try { if (window.gtag) gtag('event', 'load_episode', { event_category:'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch(e){}
 
@@ -689,9 +702,13 @@
 
       const latestReleased = episodes.findLast(ep => ep.released && ep.src);
       if (latestReleased) {
-        // pre-set currentPlayingKey so the initial automatic play/load is associated
+        // show latest info in now panel but do not autoplay
+        document.getElementById('now-title').textContent = `#${latestReleased.id} ${latestReleased.title}`;
+        document.getElementById('now-desc').textContent = latestReleased.desc || '';
+        const nowDateEl = document.getElementById('now-date'); if (nowDateEl) nowDateEl.textContent = latestReleased.date || '';
+        // set current playing key so likes map correctly, but don't load audio until user clicks
         window.currentPlayingKey = `ep${latestReleased.id}`;
-        loadEpisode(latestReleased);
+        syncHeartState(`ep${latestReleased.id}`, latestReleased.title);
       }
 
 
