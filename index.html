@@ -165,7 +165,6 @@
     .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
     .episode .meta{flex:1}
   .episode .title{font-weight:600}
-  /* title row: title left, date right */
   .episode .title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
   .episode .date{font-size:13px;color:var(--muted);margin-left:8px;flex:0 0 auto}
     .episode.disabled{cursor:not-allowed;opacity:.7}
@@ -673,16 +672,10 @@
             const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
             try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
           }
-  // populate now panel with title, date and desc
   document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
   document.getElementById('now-desc').textContent = ep.desc || '';
-  // ensure the now panel displays the date as well
-  const nowDateEl = document.getElementById('now-date');
-  if (nowDateEl) nowDateEl.textContent = ep.date || '';
-  // send a lightweight GA event for the manual load (older code sent a play here)
+  const nowDateEl = document.getElementById('now-date'); if (nowDateEl) nowDateEl.textContent = ep.date || '';
   try { if (window.gtag) gtag('event', 'load_episode', { event_category:'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch(e){}
-
-  // Sync UI state for the now heart (already set above). Ensure all trackers see the same key.
   syncHeartState(episodeKey, ep.title);
 
         // hide the matching episode row from the list to avoid duplicate entry
@@ -702,13 +695,16 @@
 
       const latestReleased = episodes.findLast(ep => ep.released && ep.src);
       if (latestReleased) {
-        // show latest info in now panel but do not autoplay
         document.getElementById('now-title').textContent = `#${latestReleased.id} ${latestReleased.title}`;
         document.getElementById('now-desc').textContent = latestReleased.desc || '';
         const nowDateEl = document.getElementById('now-date'); if (nowDateEl) nowDateEl.textContent = latestReleased.date || '';
-        // set current playing key so likes map correctly, but don't load audio until user clicks
         window.currentPlayingKey = `ep${latestReleased.id}`;
+        currentPlayingKey = `ep${latestReleased.id}`;
         syncHeartState(`ep${latestReleased.id}`, latestReleased.title);
+        try {
+          const el = document.querySelector(`.episode[data-episode="ep${latestReleased.id}"]`);
+          if (el) el.style.display = 'none';
+        } catch (e) {}
       }
 
 
