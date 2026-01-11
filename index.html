@@ -5,7 +5,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XFRX8T94YG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){dataLayer.push(arguments);} 
     gtag('js', new Date());
     gtag('config', 'G-XFRX8T94YG');
   </script>
@@ -63,7 +63,7 @@
     }
 
     .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
-    .hero h1{font-size:48px;font-weight:100;letter-spacing:1px;margin:0;text-shadow:0 12px 36px rgba(0,0,0,0.6);}
+    .hero h1{font-size:48px;font-weight:100;letter-spacing:1px;margin:0;text-shadow:0 12px 36px rgba(0,0,0,0.6);} 
     .logo-mark{width:min(40vw,240px);aspect-ratio:1/1;margin:0 auto 18px auto;display:flex;align-items:center;justify-content:center;opacity:.9;}
     .logo-mark img{max-width:100%;max-height:100%;object-fit:contain}
     .scroll-cue{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.8;}
@@ -74,13 +74,13 @@
     @media (max-width:720px){.wrap{padding:20px}.hero h1{font-size:32px}}
 
     .lead{margin:12px auto 0 auto;max-width:780px;color:#e7f6fb;opacity:.9;line-height:1.7}
-    .card{margin-top:28px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);}
-    .section-title{font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);}
+    .card{margin-top:28px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-fi[...]
+    .section-title{font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);} 
     .plyr--audio .plyr__controls{background:transparent !important;color:var(--muted)}
     .plyr--audio .plyr__control{background:var(--glass) !important;border-radius:50%;transition:background .3s,color .3s;}
     .plyr--audio .plyr__control:hover{background:var(--accent) !important;color:#000 !important}
 
-    .now{max-width:1100px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);}
+    .now{max-width:1100px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);} 
     .now .label{font-size:13px;color:var(--muted)}
     .now .title{font-weight:600;margin-top:4px}
     .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
@@ -161,7 +161,7 @@
 
     
     .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
-    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
+    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);curs[...]
     .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
     .episode .meta{flex:1}
   .episode .title{font-weight:600}
@@ -300,7 +300,7 @@
       <h2 class="section-title">再生</h2>
       <div id="player-wrap">
         <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
-          <source id="audio-source" src="https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" type="audio/mpeg" data-title="#1 <cold sleep>">
+          <source id="audio-source" src="https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" type="audio/mpeg" data[...]>
           あなたのブラウザは audio をサポートしていません。
         </audio>
       </div>
@@ -339,7 +339,7 @@
         <div class="field"><label for="email">メールアドレス（任意）</label><input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ"></div>
         <div class="field"><label for="message">メッセージ</label><textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea></div>
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-        <div style="display:flex;gap:8px;align-items:center"><button type="submit">送信する</button><div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div></div>
+        <div style="display:flex;gap:8px;align-items:center"><button type="submit">送信する</button><div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアレイ...</div></div>
       </form>
 
       <footer>
@@ -352,13 +352,13 @@
     <section class="card" aria-label="よくある質問">
       <h2 class="section-title">よくある質問</h2>
       <div class="faq">
-        <div class="faq-item"><div class="faq-question">え、これ何？</div><div class="faq-answer">Cold Room Radioは Perfume がコールドスリープ中の期間も好きな気持ちを交わせる場として立ち上げた、<br>「非公式」のオンラインレイディオ番組です。</br></div></div>
-        <div class="faq-item"><div class="faq-question">何かのサブスク？お金かかるの？</div><div class="faq-answer">多くの方と「気持ちを交わしたい」「想いを共有したい」という思いから、<br>広告は一切入れず、無料でお聴きいただけるようにしています。</br>スポンサーやPR枠は設けていません。<br>ただし、番組トーク内で純粋に好きなものや良いと思ったものを紹介することはあります。</div></div>
-        <div class="faq-item"><div class="faq-question">今後有料コンテンツかなんか作ってそこに誘導する感じ？</div><div class="faq-answer">いいえ。このホームページで聴ける番組だけです。</div></div>
+        <div class="faq-item"><div class="faq-question">え、これ何？</div><div class="faq-answer">Cold Room Radioは Perfume がコールドスリープ中の期間も好きな気持ちを交わ...</div></div>
+        <div class="faq-item"><div class="faq-question">何かのサブスク？お金かかるの？</div><div class="faq-answer">多くの方と「気持ちを交わしたい」「想いを共有し...</div></div>
+        <div class="faq-item"><div class="faq-question">今後有料コンテンツかなんか作ってそこに誘導する感じ？</div><div class="faq-answer">いいえ。このホームページ...</div></div>
         <div class="faq-item"><div class="faq-question">へー...ってか誰？</div><div class="faq-answer">ただのファンです。関係者ではありません。</div></div>
-        <div class="faq-item"><div class="faq-question">で、そのParallel Time Archiveって何？</div><div class="faq-answer">時空を超えて旅する者たちの記録を保管する機関です。<br>(私たちに馴染みのある文字を使って設定を入れてみたかっただけです)</br></div></div>
-        <div class="faq-item"><div class="faq-question">Cold Roomとは？</div><div class="faq-answer">Perfumeのコールドcapsuleが保管されている場所です。<br>私たちがこのRoomでスリープ明けまで暖かく3人を見守っているという独自の設定です。</br></div></div>
-        <div class="faq-item"><div class="faq-question">新しいのはいつアップされるの？</div><div class="faq-answer">週一の更新を予定しています。<br>お手紙やイラストの投稿が多い時は、もう少し頻繁に更新するかもしれません。</br></div></div>
+        <div class="faq-item"><div class="faq-question">で、そのParallel Time Archiveって何？</div><div class="faq-answer">時空を超えて旅する者たちの記録を保管する機関で...</div></div>
+        <div class="faq-item"><div class="faq-question">Cold Roomとは？</div><div class="faq-answer">Perfumeのコールドcapsuleが保管されている場所です。<br>私たちがこのRoomを保守しているわけではありません。</div></div>
+        <div class="faq-item"><div class="faq-question">新しいのはいつアップされるの？</div><div class="faq-answer">週一の更新を予定しています。<br>お手紙やイラストも歓迎です。</div></div>
       </div>
     </section>
   </main>
@@ -605,12 +605,12 @@
                 const w = Math.round(size+2);
                 const h = Math.round(size+2);
                 const strokeW = Math.max(1, Math.round((size+2) * 0.18));
-                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="${w/2},0 ${w},${h} 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="${w/2},0 ${w},${h} ${w/2},${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}"/></svg>`;
               } else {
                 const w = Math.round(size+2);
                 const h = Math.round(size+2);
                 const strokeW = Math.max(1, Math.round((size+2) * 0.18));
-                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 ${w},0 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+                node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 ${w},0 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}"/></svg>`;
               }
               // mark as triangle for animation rules
               node.classList.add('sparkle-triangle');
@@ -658,12 +658,36 @@
           alert('このエピソードの音源URLがまだ設定されていません。');
           return;
         }
-        srcEl.src = ep.src;
-        audioEl.load();
-          // set playing key before initiating play so analytics can read it
-          const episodeKey = `ep${ep.id}`;
-          window.currentPlayingKey = episodeKey;
-          // update Now Heart Button
+
+        // compute episodeKey early and use a single source-of-truth
+        const episodeKey = `ep${ep.id}`;
+
+        try {
+          // reveal previous row (if any) before hiding the new one
+          if (currentPlayingKey && currentPlayingKey !== episodeKey) {
+            const prev = document.querySelector(`.episode[data-episode="${currentPlayingKey}"]`);
+            if (prev) prev.style.display = '';
+          }
+
+          // update source: prefer Plyr API for a consistent update, fallback to native element
+          if (typeof plyr === 'object' && typeof plyr.source === 'function') {
+            plyr.source({
+              type: 'audio',
+              title: ep.title || '',
+              sources: [{ src: ep.src, type: 'audio/mpeg' }]
+            });
+          } else {
+            srcEl.src = ep.src;
+            srcEl.dataset.title = ep.title || '';
+            audioEl.load();
+          }
+
+          // Update Now UI
+          document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
+          document.getElementById('now-desc').textContent = ep.desc || '';
+          const nowDateEl = document.getElementById('now-date'); if (nowDateEl) nowDateEl.textContent = ep.date || '';
+
+          // update Now heart metadata + pressed state
           const nowHeart = document.querySelector('.now .heart-btn');
           if (nowHeart) {
             nowHeart.dataset.episode = episodeKey;
@@ -672,22 +696,19 @@
             const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
             try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch(e){}
           }
-  document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
-  document.getElementById('now-desc').textContent = ep.desc || '';
-  const nowDateEl = document.getElementById('now-date'); if (nowDateEl) nowDateEl.textContent = ep.date || '';
-  try { if (window.gtag) gtag('event', 'load_episode', { event_category:'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch(e){}
-  syncHeartState(episodeKey, ep.title);
 
-        // hide the matching episode row from the list to avoid duplicate entry
-        try {
-          if (currentPlayingKey && currentPlayingKey !== episodeKey) {
-            const prev = document.querySelector(`.episode[data-episode="${currentPlayingKey}"]`);
-            if (prev) prev.style.display = '';
-          }
-          const el = document.querySelector(`.episode[data-episode="${episodeKey}"]`);
-          if (el) el.style.display = 'none';
+          // set both local and window keys (single source-of-truth)
           currentPlayingKey = episodeKey;
           window.currentPlayingKey = episodeKey;
+
+          // sync hearts
+          syncHeartState(episodeKey, ep.title);
+
+          // hide the matching episode row from the list to avoid duplicate entry
+          const el = document.querySelector(`.episode[data-episode="${episodeKey}"]`);
+          if (el) el.style.display = 'none';
+
+          try { if (window.gtag) gtag('event', 'load_episode', { event_category:'audio', event_label: ep.title, content_id: episodeKey }); } catch (e){}
         } catch (err) {
           console.warn('Could not hide/show episode row', err);
         }
