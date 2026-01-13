@@ -11,7 +11,7 @@ window.EPISODE_LIST = [
   { id:5, title:"<K(p000003)>", date:"2026/02/01公開", desc:"ココ好きシリーズ ①", src:"", release_at: "2026-02-01T11:30:00+09:00" },
   { id:6, title:"<N(p000002)>", date:"2026/02/08公開", desc:"ココ好きシリーズ ②", src:"", release_at: "2026-02-08T11:30:00+09:00" },
   { id:7, title:"<A(p000001)>", date:"2026/02/15公開", desc:"ココ好きシリーズ ③", src:"", release_at: "2026-02-15T11:30:00+09:00" },
-  { id:8, title:"<past memories>", date:"", desc:"", src:"一番記憶に残っている〇〇", release_at: null },
+  { id:8, title:"<past memories>", date:"", desc:"一番記憶に残っている〇〇", src:"", release_at: null },
   { id:9, title:"<...>", date:"", desc:"", src:"", release_at: null },
   { id:10, title:"<...>", date:"", desc:"", src:"", release_at: null }
 ];
