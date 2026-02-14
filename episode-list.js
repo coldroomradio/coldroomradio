@@ -11,8 +11,8 @@ window.EPISODE_LIST = [
   { id:5, title:"<cosmic level>", date:"2026/01/25公開", desc:"一番って決められる？-Album Edition-", src:"https://archive.org/download/coldroomradio_ep05_cosmiclevel/coldroomradio_ep05_cosmiclevel.mp3", release_at: "2026-01-25T20:00:00+09:00" },
   { id:6, title:"<K(p000003)>", date:"2026/02/01公開", desc:"ココ好きシリーズ ①", src:"https://archive.org/download/coldroomradio_ep06_k/coldroomradio_ep06_k.mp3", release_at: "2026-02-01T18:59:00+09:00" },
   { id:7, title:"<N(p000002)>", date:"2026/02/08公開", desc:"ココ好きシリーズ ②", src:"https://archive.org/download/coldroomradio_ep07_n/coldroomradio_ep07_n.mp3", release_at: "2026-02-08T18:59:00+09:00" },
-  { id:8, title:"<A(p000001)>", date:"2026/02/15公開", desc:"ココ好きシリーズ ③", src:"", release_at: "2026-02-15T18:59:00+09:00" },
-  { id:9, title:"<...>", date:"", desc:"", src:"", release_at: null },
-  { id:10, title:"<...>", date:"", desc:"", src:"", release_at: null },
-  { id:11, title:"<...>", date:"", desc:"", src:"", release_at: null }
+  { id:8, title:"<A(p000001)>", date:"2026/02/15公開", desc:"ココ好きシリーズ ③", src:"https://archive.org/download/coldroomradio_ep08_a/coldroomradio_ep08_a.mp3", release_at: "2026-02-15T08:59:00+09:00" },
+  { id:9, title:"<future love>", date:"2026/02/22公開", desc:"", src:"", release_at: null },
+  { id:10, title:"<...>", date:"2026/03/01公開", desc:"", src:"", release_at: null },
+  { id:11, title:"<...>", date:"2026/03/08公開", desc:"", src:"", release_at: null }
 ];
