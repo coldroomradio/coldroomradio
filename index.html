@@ -15,261 +15,11 @@
   <title>COLD ROOM RADIO</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;600&display=swap" rel="stylesheet">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
-
-  <style>
-    :root{
-      --bg:#0a1620;
-      --nebula:#133a4d;
-      --accent:#6be3ff;
-      --muted:#b3c7d6;
-      --glass:rgba(255,255,255,0.08);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;color:#fff;background:transparent}
-    body, p, label, input, textarea, button, h1, h2, h3, h4, h5, h6 {
-      font-family:'Exo 2','IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif !important;
-      font-weight:100;
-      letter-spacing:.5px;
-    }
-    a{color:inherit}
-
-    /* Background layers */
-    .bg-wrap{position:fixed;inset:0;z-index:-3;overflow:hidden;background:transparent}
-    .bg-layer {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 30%, rgba(255, 90, 255, 0.08), transparent 60%),
-        radial-gradient(ellipse at 80% 70%, rgba(0, 255, 190, 0.06), transparent 70%),
-        radial-gradient(ellipse at 60% 20%, rgba(180, 100, 255, 0.07), transparent 75%),
-        radial-gradient(ellipse at 30% 80%, rgba(120, 255, 180, 0.05), transparent 80%),
-        radial-gradient(ellipse at 50% 50%, rgba(255, 180, 255, 0.04), transparent 85%),
-        linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%);
-      background-blend-mode: screen, overlay, normal;
-      background-size: 200% 200%;
-      animation: drift 25s ease-in-out infinite alternate;
-    }
-
-    @keyframes drift {
-      0% {background-position: 0% 0%;}
-      50% {background-position: 50% 50%;}
-      100% {background-position: 100% 100%;}
-    }
-
-    .grain{position:absolute;inset:0;pointer-events:none;
-      background-image:radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size:4px 4px;mix-blend-mode:overlay;opacity:.5
-    }
-
-    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
-    .hero h1{font-size:48px;font-weight:100;letter-spacing:1px;margin:0;text-shadow:0 12px 36px rgba(0,0,0,0.6);}
-    .logo-mark{width:min(40vw,240px);aspect-ratio:1/1;margin:0 auto 18px auto;display:flex;align-items:center;justify-content:center;opacity:.9;}
-    .logo-mark img{max-width:100%;max-height:100%;object-fit:contain}
-    .scroll-cue{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.8;}
-    .arrow{width:1px;height:24px;background:linear-gradient(180deg,transparent,var(--accent));box-shadow:0 0 12px rgba(107,227,255,0.6);animation:drip 1.4s ease-in-out infinite;}
-    @keyframes drip{0%{transform:translateY(0);opacity:.4}50%{transform:translateY(6px);opacity:1}100%{transform:translateY(0);opacity:.4}}
-
-    .wrap{max-width:1100px;margin:0 auto;padding:36px}
-    @media (max-width:720px){.wrap{padding:20px}.hero h1{font-size:32px}}
-
-    .lead{margin:12px auto 0 auto;max-width:780px;color:#e7f6fb;opacity:.9;line-height:1.7}
-    .card{margin-top:28px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.6), inset 0 0 40px rgba(43,209,234,0.05);}
-    .section-title{font-size:20px;font-weight:200;margin:0 0 8px 0;color:var(--accent);}
-    .plyr--audio .plyr__controls{background:transparent !important;color:var(--muted)}
-    .plyr--audio .plyr__control{background:var(--glass) !important;border-radius:50%;transition:background .3s,color .3s;}
-    .plyr--audio .plyr__control:hover{background:var(--accent) !important;color:#000 !important}
-
-    .now{max-width:1100px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.05);}
-    .now .label{font-size:13px;color:var(--muted)}
-    .now .title{font-weight:600;margin-top:4px}
-    .now .desc{font-size:13px;color:var(--muted);margin-top:6px}
-    
-  .now, .episode { position: relative; }
-
-    /* Sparkle visuals */
-    .sparkle {
-      position: absolute;
-  border-radius: 50%;
-      pointer-events: none;
-      --spark-color: var(--accent);
-  background: radial-gradient(circle, rgba(255,250,230,0.98) 0%, rgba(255,255,255,0.85) 40%, transparent 70%);
-      box-shadow: 0 0 8px var(--spark-color),
-                  0 0 16px rgba(107,227,255,0.6);
-  animation: sparkleFloat var(--spark-duration,2.4s) ease-out forwards;
-  opacity: 0;
-    }
-
-    @keyframes sparkleFloat {
-      0% {
-        transform: translate(0,6px) scale(0.4);
-        opacity: 0;
-      }
-      8% {
-        opacity: 0.18;
-      }
-      60% {
-        opacity: 0.9;
-      }
-      100% {
-        transform: translate(var(--x,0), var(--y,-80px)) scale(0.6) rotate(calc(var(--curve,0) * 1deg));
-        opacity: 0;
-      }
-    }
-
-    .sparkle-circle, .sparkle-triangle {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      will-change: transform, opacity;
-    }
-
-    .sparkle-circle { background: radial-gradient(circle, #fff, transparent 60%); border-radius: 50%; }
-
-    .sparkle, .sparkle * {
-      overflow: visible !important;
-    }
-
-    .heart-btn { overflow: visible; }
-
-  /* Triangle sparkles */
-  .sparkle-triangle {
-      width: 0;
-      height: 0;
-      transform-origin: center bottom;
-      filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));
-      z-index:10000;
-      opacity:0;
-      animation: sparkleFloat var(--spark-duration,2.4s) ease-out forwards;
-      background: transparent;
-      border-left: 0 solid transparent;
-      border-right: 0 solid transparent;
-      border-bottom: 0 solid transparent;
-    }
-
-    .sparkle.sparkle-triangle {
-      background: transparent !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      background-image: none !important;
-    }
-
-  /* Triangle colors */
-    .tri-blue { border-bottom-color: rgba(107,227,255,0.96) !important; }
-    .tri-soft { border-bottom-color: rgba(255, 245, 138, 0.92) !important; }
-    .tri-pink { border-bottom-color: rgba(255,180,255,0.92) !important; }
-
-    
-    .episodes{display:flex;flex-direction:column;gap:10px;max-width:1100px}
-    .episode{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:transform .18s, border-color .18s;}
-    .episode:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.12)}
-    .episode .meta{flex:1}
-  .episode .title{font-weight:600}
-  .episode .title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .episode .date{font-size:13px;color:var(--muted);margin-left:8px;flex:0 0 auto}
-    .episode.disabled{cursor:not-allowed;opacity:.7}
-    .episode .status{font-size:13px;color:var(--muted)}
-
-    /* Heart wrapper */
-    .heart-wrap {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      padding-left: 12px;
-      border-left: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .heart-btn {
-      position: relative;
-      z-index: 10;
-  background: transparent !important;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .heart-btn svg { width:18px; height:18px; display:block; }
-  .heart-btn:focus { outline: none; }
-  .heart-btn:focus-visible { box-shadow: 0 0 0 4px rgba(107,227,255,0.08); border-radius: 8px; }
-  .heart-btn svg { shape-rendering: geometricPrecision; }
-    .heart-btn svg path { fill: none; stroke: #fff; stroke-width: 1; transition: all .18s ease; }
-    .heart-btn:hover svg path { stroke: var(--accent); transform: scale(1.06); }
-    .heart-btn.active svg path { fill: #ff7ca8; stroke: #ff3f72; filter: drop-shadow(0 0 6px rgba(255,90,150,0.6)); transform: scale(1.08); }
-
-    .heart-btn.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      pointer-events: none;
-      background: transparent !important;
-    }
-
-    .heart-btn.disabled svg { stroke: #aaa; fill: none; }
-
-    /* Larger touch target on small screens */
-    @media (max-width:720px) {
-      .heart-btn { padding: 14px; }
-      .heart-btn svg { width: 22px; height: 22px; }
-      .heart-wrap { padding-left: 16px; }
-    }
-
-    /* Now-playing horizontal layout */
-    .now { display: block; }
-    .now .label { display:block; width:100%; }
-    .now .bar { display:flex; align-items:center; gap:12px; margin-top:8px }
-    .now .heart-wrap { align-items: center; }
-    .now .now-meta { display:flex; flex-direction:column; gap:6px; flex:1 }
-    @media (min-width:721px) {
-      .now { display:block }
-    }
-
-    form.contact{margin-top:12px;padding:16px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.03)}
-    .field{display:flex;flex-direction:column;margin-bottom:12px}
-    label{font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],input[type=email],textarea{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
-    textarea{min-height:120px;resize:vertical}
-    button{background:linear-gradient(90deg,var(--accent),#7af5ff);border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
-
-    footer{margin-top:36px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
-    .socials a{margin-left:8px;text-decoration:none;color:var(--muted)}
-
-    /* FAQ */
-    .faq-item {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding: 10px 0;
-    }
-    .faq-question {
-    cursor: pointer;
-    font-weight: 300;
-    color: var(--accent);
-    transition: color 0.3s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    }
-    .faq-question::after {
-    content: "+";
-    color: var(--muted);
-    transition: transform 0.3s;
-    }
-    .faq-item.active .faq-question::after {
-    content: "−";
-    color: var(--accent);
-    }
-    .faq-answer {
-    display: none;
-    margin-top: 6px;
-    line-height: 1.8;
-    color: #e7f6fb;
-    font-weight: 200;
-    opacity: 0.9;
-    }
-    .faq-item.active .faq-answer {
-    display: block;
-    }
-  </style>
 </head>
 <body>
 
@@ -277,6 +27,7 @@
     <div class="bg-layer"></div>
     <div class="grain"></div>
   </div>
+
   <canvas id="stars" style="position:fixed;inset:0;z-index:-2;pointer-events:none;"></canvas>
 
   <section class="hero" id="top">
@@ -296,24 +47,41 @@
   </section>
 
   <main class="wrap" id="main">
+
     <section class="card" aria-label="プレイヤー">
       <h2 class="section-title">再生</h2>
+
       <div id="player-wrap">
         <audio id="audio-player" controls crossorigin playsinline style="width:100%;">
-          <source id="audio-source" src="https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3" type="audio/mpeg" data-title="#1 <cold sleep>">
+          <source id="audio-source"
+          src="https://dn720703.ca.archive.org/0/items/cold-room-radio-episode-01-coldsleep/Cold%20Room%20Radio%20-%20Episode%2001%20-%20coldsleep.mp3"
+          type="audio/mpeg"
+          data-title="#1 <cold sleep>">
           あなたのブラウザは audio をサポートしていません。
         </audio>
       </div>
+
       <div class="now" style="margin-top:14px;">
         <div class="label">最新のエピソード</div>
+
         <div class="bar">
           <div class="now-meta">
+
+            <div class="visualizer" id="vis">
+              <div class="vis-bar"></div>
+              <div class="vis-bar"></div>
+              <div class="vis-bar"></div>
+            </div>
+
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-              <div id="now-title" class="title">#1 <cold sleep></div>
+              <div id="now-title" class="title">#1 cold sleep</div>
               <div id="now-date" class="date">2025/10/10</div>
             </div>
-            <div id="now-desc" class="desc">2025/10/10 公開</div>
+
+            <div id="now-desc" class="desc">大切なメッセージ</div>
+
           </div>
+
           <div class="heart-wrap">
             <button class="heart-btn" data-episode="current">
               <svg viewBox="0 0 24 24">
@@ -331,21 +99,48 @@
     </section>
 
     <section class="card" aria-label="メッセージフォーム">
+
       <h2 class="section-title">メッセージを送る</h2>
-        <form class="contact" id="contact-form" action="https://formspree.io/f/mzzjqrwy" method="POST">
+
+      <form class="contact" id="contact-form" action="https://formspree.io/f/mzzjqrwy" method="POST">
+
         <input type="hidden" name="_subject" value="[Cold Room Radio] 新しいメッセージ">
         <input type="hidden" name="_next" value="https://coldroomradio.github.io/coldroomradio/thanks.html">
-        <div class="field"><label for="name">お名前（任意）</label><input id="name" name="name" type="text" placeholder="ラジオネームでOK"></div>
-        <div class="field"><label for="email">メールアドレス（任意）</label><input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ"></div>
-        <div class="field"><label for="message">メッセージ</label><textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea></div>
+
+        <div class="field">
+          <label for="name">お名前（任意）</label>
+          <input id="name" name="name" type="text" placeholder="ラジオネームでOK">
+        </div>
+
+        <div class="field">
+          <label for="email">メールアドレス（任意）</label>
+          <input id="email" name="email" type="email" placeholder="連絡が必要な場合のみ">
+        </div>
+
+        <div class="field">
+          <label for="message">メッセージ</label>
+          <textarea id="message" name="message" placeholder="感想や記憶、思い出をお寄せください"></textarea>
+        </div>
+
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-        <div style="display:flex;gap:8px;align-items:center"><button type="submit">送信する</button><div style="color:var(--muted);font-size:13px">※返信が必要な場合はメールアドレスを書いてください</div></div>
+
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="submit">送信する</button>
+          <div style="color:var(--muted);font-size:13px">
+            ※返信が必要な場合はメールアドレスを書いてください
+          </div>
+        </div>
+
       </form>
 
       <footer>
         <div>© Cold Room Radio — 非公式ファンレイディオ</div>
-        <div class="socials"><a href="https://x.com/coldroomradio" target="_blank">X @coldroomradio</a><a href="https://instagram.com/coldroomradio" target="_blank">Instagram</a></div>
+        <div class="socials">
+          <a href="https://x.com/coldroomradio" target="_blank">X @coldroomradio</a>
+          <a href="https://instagram.com/coldroomradio" target="_blank">Instagram</a>
+        </div>
       </footer>
+
     </section>
 
     <!-- FAQ -->
@@ -402,18 +197,17 @@
       const rawEpisodes = window.EPISODE_LIST || [];
       const elList = document.getElementById('episodes-list');
       const episodes = rawEpisodes.map(ep => {
-        // compute released by comparing now to release_at (if present)
-        const releaseDate = parseReleaseAtToDate(ep.release_at || ep.date || null);
-        let released = !!ep.released;
-        if (releaseDate) {
-          // release when current time is >= releaseDate; releaseDate may include timezone offset
-          released = (nowInJST().getTime() >= releaseDate.getTime());
-        }
-        return Object.assign({}, ep, { released });
-      });
+      const releaseDate = parseReleaseAtToDate(ep.release_at || ep.date || null);
+      let released = !!ep.released;
+      if (releaseDate) {
+        released = (nowInJST().getTime() >= releaseDate.getTime());
+      }
+      return Object.assign({}, ep, { released });
+    });
 
-      episodes.forEach(ep => {
-        const div = document.createElement('div');
+    // REVERSE THE LIST HERE
+    episodes.reverse().forEach(ep => {
+      const div = document.createElement('div');
           div.className = 'episode' + (!ep.released ? ' disabled' : '');
           div.dataset.episode = `ep${ep.id}`;
 
@@ -653,6 +447,10 @@
 
       function loadEpisode(ep){
         const srcEl = document.getElementById('audio-source');
+        const savedTime = localStorage.getItem(`progress_ep${ep.id}`);
+        if (savedTime) {
+          player.currentTime = parseFloat(savedTime);
+        }
         const audioEl = document.getElementById('audio-player');
         if(!ep.src){
           alert('このエピソードの音源URLがまだ設定されていません。');
@@ -745,6 +543,12 @@
          ------------------------------ */
       document.addEventListener('DOMContentLoaded', function() {
         const player = document.getElementById('audio-player');
+          setInterval(() => {
+            if (!player.paused && window.currentPlayingKey) {
+              localStorage.setItem(`progress_${window.currentPlayingKey}`, player.currentTime);
+              localStorage.setItem('lastPlayedKey', window.currentPlayingKey);
+            }
+          }, 5000);
         const plyrInstance = plyr;
         const checkpoints = [25, 50, 75, 90];
         const sent = {};
