@@ -67,12 +67,6 @@
         <div class="bar">
           <div class="now-meta">
 
-            <div class="visualizer" id="vis">
-              <div class="vis-bar"></div>
-              <div class="vis-bar"></div>
-              <div class="vis-bar"></div>
-            </div>
-
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
               <div id="now-title" class="title">#1 cold sleep</div>
               <div id="now-date" class="date">2025/10/10</div>
@@ -230,7 +224,7 @@
   const titleRow = document.createElement('div');
   titleRow.className = 'title-row';
   titleRow.appendChild(title);
-  titleRow.appendChild(date);
+
 
   meta.appendChild(titleRow);
   meta.appendChild(status);
@@ -252,7 +246,9 @@
         `;
 
   heartWrap.appendChild(heart);
+
   div.appendChild(meta);
+    div.appendChild(date);
         div.appendChild(heartWrap);
 
         // Only make clickable if released
@@ -447,17 +443,22 @@
 
       function loadEpisode(ep){
         const srcEl = document.getElementById('audio-source');
+        const audioEl = document.getElementById('audio-player'); // Define this at the top
+        
         const savedTime = localStorage.getItem(`progress_ep${ep.id}`);
-        if (savedTime) {
-          player.currentTime = parseFloat(savedTime);
+        if (savedTime && audioEl) {
+          // Change 'player' to 'audioEl'
+          audioEl.currentTime = parseFloat(savedTime);
         }
-        const audioEl = document.getElementById('audio-player');
-        if(!ep.src){
+
+        if (!ep.src) {
           alert('このエピソードの音源URLがまだ設定されていません。');
           return;
         }
+        
         srcEl.src = ep.src;
         audioEl.load();
+        
           // set playing key before initiating play so analytics can read it
           const episodeKey = `ep${ep.id}`;
           window.currentPlayingKey = episodeKey;
@@ -489,13 +490,41 @@
         }
       }
 
-      const latestReleased = episodes.findLast(ep => ep.released && ep.src);
-      if (latestReleased) {
-        document.addEventListener('DOMContentLoaded', () => {
-          loadEpisode(latestReleased);
-        });
-      }
+      function getLatestEpisode(list) {
 
+        const now = new Date();
+
+        const releasedEpisodes = list.filter(ep => {
+          if (!ep.src) return false;
+
+          if (!ep.release_at) return true; // allow if missing date
+
+          return new Date(ep.release_at) <= now;
+        });
+
+        if (releasedEpisodes.length === 0) return null;
+
+        releasedEpisodes.sort((a, b) => {
+
+          const dateA = a.release_at ? new Date(a.release_at) : new Date(0);
+          const dateB = b.release_at ? new Date(b.release_at) : new Date(0);
+
+          if (dateA.getTime() !== dateB.getTime()) {
+            return dateB - dateA; // newest date first
+          }
+
+          return (b.id || 0) - (a.id || 0); // fallback to id
+        });
+
+        return releasedEpisodes[0];
+      }
+            
+
+      const latestReleased = getLatestEpisode(episodes);
+
+      if (latestReleased) {
+        loadEpisode(latestReleased);
+      }
 
       // Starfield
         const canvas = document.getElementById('stars');
