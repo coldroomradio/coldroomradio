@@ -15,8 +15,5 @@ window.EPISODE_LIST = [
   { id:9, title:"<miracle love>", date:"2026/02/22公開", desc:"一番って決められる？-Song Edition-", src:"https://archive.org/download/coldroomradio_ep09_miraclelove/coldroomradio_ep09_miraclelove.mp3", release_at: "2026-02-22T18:59:00+09:00" },
   { id:10, title:"<natural hello>", date:"2026/03/01公開", desc:"一番って決められる？-Dance Move Edition-", src:"https://archive.org/download/coldroomradio_ep10_naturallove/coldroomradio_ep10_naturallove.mp3", release_at: "2026-03-01T18:59:00+09:00"},
   { id:11, title:"<after memories>", date:"2026/03/08公開", desc:"アフターパンフレットを一緒に見よう！", src:"https://archive.org/download/coldroomradio_ep11_aftermemories/coldroomradio_ep11_aftermemories.mp3", release_at: "2026-03-08T18:59:00+09:00" },
-  { id:12, title:"<...>", date:"2026/03/15公開", desc:"", src:"", release_at: "2026-03-15T18:59:00+09:00" },
-  { id:13, title:"<...>", date:"2026/03/22公開", desc:"", src:"", release_at: "2026-03-22T18:59:00+09:00" },
-  { id:14, title:"<...>", date:"2026/04/01公開", desc:"", src:"", release_at: "2026-04-01T18:59:00+09:00" },
-  { id:15, title:"<...>", date:"2026/04/08公開", desc:"", src:"", release_at: "2026-04-08T18:59:00+09:00" },
+  { id:12, title:"<mirai game>", date:"2026/03/15公開", desc:"一番って決められる？-Album Cover Edition-", src:"https://archive.org/download/coldroomradio_ep12_miraigame/coldroomradio_ep12_miraigame.mp3", release_at: "2026-03-15T18:59:00+09:00" },
 ];
