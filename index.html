@@ -65,16 +65,13 @@
         <div class="label">最新のエピソード</div>
 
         <div class="bar">
+
           <div class="now-meta">
-
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-              <div id="now-title" class="title">#1 cold sleep</div>
-              <div id="now-date" class="date">2025/10/10</div>
-            </div>
-
+            <div id="now-title" class="title">#1 cold sleep</div>
             <div id="now-desc" class="desc">大切なメッセージ</div>
-
           </div>
+
+          <div id="now-date" class="date">2025/10/10</div>
 
           <div class="heart-wrap">
             <button class="heart-btn" data-episode="current">
@@ -83,6 +80,7 @@
               </svg>
             </button>
           </div>
+
         </div>
       </div>
     </section>
@@ -168,8 +166,6 @@
   <script src="./episode-list.js"></script>
 
   <script>
-      // Load episodes from external `episode-list.html` which defines window.EPISODE_LIST
-      // If that file isn't present or EPISODE_LIST is not defined, fall back to an empty list.
       function parseReleaseAtToDate(s) {
         if (!s) return null;
         try {
@@ -199,7 +195,7 @@
       return Object.assign({}, ep, { released });
     });
 
-    // REVERSE THE LIST HERE
+    // REVERSE THE LIST
     episodes.reverse().forEach(ep => {
       const div = document.createElement('div');
           div.className = 'episode' + (!ep.released ? ' disabled' : '');
@@ -248,21 +244,21 @@
   heartWrap.appendChild(heart);
 
   div.appendChild(meta);
-    div.appendChild(date);
-        div.appendChild(heartWrap);
+  div.appendChild(date);
+  div.appendChild(heartWrap);
 
-        // Only make clickable if released
-        if (ep.released && ep.src) {
-          div.addEventListener('click', () => loadEpisode(ep));
-        }
+  // Only make clickable if released
+  if (ep.released && ep.src) {
+    div.addEventListener('click', () => loadEpisode(ep));
+  }
 
-        elList.appendChild(div);
-      });
+  elList.appendChild(div);
+});
 
 
-      const plyr = new Plyr('#audio-player', {
-        controls: ['play','progress','current-time','mute','volume']
-      });
+const plyr = new Plyr('#audio-player', {
+  controls: ['play','progress','current-time','mute','volume']
+});
 
   // track currently playing row key so we can hide it from the list
   let currentPlayingKey = null;
