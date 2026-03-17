@@ -190,32 +190,60 @@ a{color:inherit}
 
 /* ---------------- Now Playing ---------------- */
 
-.now{
-  max-width:1100px;
-  padding:10px;
-  border-radius:8px;
-  background:rgba(255,255,255,0.05);
-  position:relative;
+.now {
+  max-width: 1100px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  position: relative;
 }
 
-.now .label{
-  font-size:13px;
-  color:var(--muted);
-  display:block;
+.now .label {
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
 }
 
-.now .bar{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-top:8px
+.now .bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
 }
 
-.now .now-meta{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  flex:1
+.now .now-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.now .title {
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.now .desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.now .date {
+  color: var(--muted);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.now .heart-wrap {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,0.1);
 }
 
 /* ---------------- Episodes ---------------- */
@@ -297,10 +325,6 @@ a{color:inherit}
 }
 
 .episode .date{
-  position:absolute;
-  right:55px;
-  top:50%;
-  transform:translateY(-50%);
   font-size:13px;
   color:var(--muted)
 }
@@ -471,13 +495,13 @@ footer{
 /* Ensure the episode row treats all three parts as siblings */
 .episode {
     display: flex;
-    align-items: center; /* This centers everything vertically */
+    align-items: center; 
     padding: 12px 16px;
-    gap: 16px; /* Space between text, date, and heart */
+    gap: 16px; 
 }
 
 .episode .meta {
-    flex: 1; /* Takes up all remaining space on the left */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -488,10 +512,10 @@ footer{
     font-size: 13px;
     color: var(--muted);
     white-space: nowrap;
-    margin: 0; /* Clear any stray margins */
+    margin: 0; 
     display: flex;
     align-items: center;
-    height: 100%; /* Ensures it uses the full height of the center alignment */
+    height: 100%; 
 }
 
 /* The Heart Column */
@@ -500,7 +524,7 @@ footer{
     align-items: center;
     padding-left: 16px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
-    height: 24px; /* Give the separator a fixed height for a cleaner look */
+    height: 24px; 
 }
 
 .now-playing {
@@ -510,8 +534,7 @@ footer{
     gap: 20px;
 }
 
-/* Ensure the date in the top card behaves the same */
 .now-playing .date {
     align-self: center;
-    margin-left: auto; /* Pushes it to the right before the heart */
+    margin-left: auto; 
 }
