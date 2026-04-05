@@ -18,4 +18,5 @@ window.EPISODE_LIST = [
   { id:12, title:"<mirai game>", date:"2026/03/15公開", desc:"一番って決められる？-Album Cover Edition-", src:"https://archive.org/download/coldroomradio_ep12_miraigame/coldroomradio_ep12_miraigame.mp3", release_at: "2026-03-15T18:59:00+09:00" },
   { id:13, title:"<photo loop>", date:"2026/03/22公開", desc:"LIVE PHOTOBOOKを一緒に見よう！", src:"https://archive.org/download/coldroomradio_ep13_photoloop/coldroomradio_ep13_photoloop.mp3", release_at: "2026-03-22T18:59:00+09:00" },
   { id:14, title:"<dream stage>", date:"2026/03/29公開", desc:"STAGE SET KIT - 開封の儀", src:"https://archive.org/download/coldroomradio_ep14_dreamstage/coldroomradio_ep14_dreamstage.mp3", release_at: "2026-03-29T18:59:00+09:00" },
+  { id:15, title:"<everyday story>", date:"2026/04/05公開", desc:"マイプレイリスト① クセツヨ ver.", src:"https://archive.org/download/coldroomradio_ep15_everydaystory/coldroomradio_ep15_everydaystory.mp3", release_at: "2026-04-05T18:59:00+09:00" },
 ];
