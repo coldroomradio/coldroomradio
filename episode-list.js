@@ -20,4 +20,5 @@ window.EPISODE_LIST = [
   { id:14, title:"<dream stage>", date:"2026/03/29公開", desc:"STAGE SET KIT - 開封の儀", src:"https://archive.org/download/coldroomradio_ep14_dreamstage/coldroomradio_ep14_dreamstage.mp3", release_at: "2026-03-29T18:59:00+09:00" },
   { id:15, title:"<everyday story>", date:"2026/04/05公開", desc:"マイプレイリスト① クセツヨ ver.", src:"https://archive.org/download/coldroomradio_ep15_everydaystory/coldroomradio_ep15_everydaystory.mp3", release_at: "2026-04-05T18:59:00+09:00" },
   { id:16, title:"<hope of spring>", date:"2026/04/12公開", desc:"寂しさ、希望、ドキュメンタリーのフリートーク", src:"https://archive.org/download/coldroomradio_ep16_harushope/coldroomradio_ep16_harushope.mp3", release_at: "2026-04-12T18:59:00+09:00" },
+  { id:17, title:"<cold preview>", date:"2026/04/19公開", desc:"ドキュメンタリーの予告映像来た！！", src:"https://archive.org/download/coldroomradio_ep17_coldpreview/coldroomradio_ep17_coldpreview.mp3", release_at: "2026-04-19T18:59:00+09:00" },
 ];
