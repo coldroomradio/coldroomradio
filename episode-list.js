@@ -23,5 +23,5 @@ window.EPISODE_LIST = [
   { id:17, title:"<cold preview>", date:"2026/04/19公開", desc:"ドキュメンタリーの予告映像来た！！", src:"https://archive.org/download/coldroomradio_ep17_coldpreview/coldroomradio_ep17_coldpreview.mp3", release_at: "2026-04-19T18:59:00+09:00" },
   { id:18, title:"<new signal>", date:"2026/04/26公開", desc:"SIGNALの予測！", src:"https://archive.org/download/coldroomradio_ep18_newsignal/coldroomradio_ep18_newsignal.mp3", release_at: "2026-04-26T18:59:00+09:00" },
   { id:19, title:"<more signals>", date:"2026/05/03公開", desc:"今週の最新ニュース", src:"https://archive.org/download/coldroomradio_ep19_moresignals/coldroomradio_ep19_moresignals.mp3", release_at: "2026-05-03T18:59:00+09:00" },
-
+  { id:20, title:"<big signal>", date:"2026/05/10公開", desc:"新曲が発表されました！", src:"https://archive.org/download/coldroomradio_ep20_bigsignal/coldroomradio_ep20_bigsignal.mp3", release_at: "2026-05-10T18:59:00+09:00" },
 ];
