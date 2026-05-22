@@ -25,4 +25,5 @@ window.EPISODE_LIST = [
   { id:19, title:"<more signals>", date:"2026/05/03公開", desc:"今週の最新ニュース", src:"https://archive.org/download/coldroomradio_ep19_moresignals/coldroomradio_ep19_moresignals.mp3", release_at: "2026-05-03T18:59:00+09:00" },
   { id:20, title:"<big signal>", date:"2026/05/10公開", desc:"新曲が発表されました！", src:"https://archive.org/download/coldroomradio_ep20_bigsignal/coldroomradio_ep20_bigsignal.mp3", release_at: "2026-05-10T18:59:00+09:00" },
   { id:21, title:"<before coldsleep>", date:"2026/05/17公開", desc:"ドキュメンタリー前(ネタバレなし)", src:"https://archive.org/download/coldroomradio_ep21_beforecoldsleep/coldroomradio_ep21_beforecoldsleep.mp3", release_at: "2026-05-17T18:59:00+09:00" },
+  { id:22, title:"<cold movie p1>", date:"2026/05/24公開", desc:"コールドスリーブ映画SP! Part 1", src:"https://archive.org/download/coldroomradio_ep22_csmoviep1/coldroomradio_ep22_csmoviep1.mp3", release_at: "2026-05-24T18:59:00+09:00" },
 ];
