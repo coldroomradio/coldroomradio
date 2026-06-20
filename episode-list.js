@@ -29,4 +29,5 @@ window.EPISODE_LIST = [
   { id:23, title:"<cold movie p2>", date:"2026/05/31公開", desc:"コールドスリーブ映画SP! Part 2", src:"https://archive.org/download/coldroomradio_ep23_csmoviep2/coldroomradio_ep23_csmoviep2.mp3", release_at: "2026-05-31T18:59:00+09:00" },
   { id:24, title:"<cold movie p3>", date:"2026/06/07公開", desc:"コールドスリーブ映画SP! Part 3", src:"https://archive.org/download/coldroomradio_ep24_csmoviep3/coldroomradio_ep24_csmoviep3.mp3", release_at: "2026-06-07T18:59:00+09:00" },
   { id:25, title:"<complete news>", date:"2026/06/14公開", desc:"完全版 DISC3!＋最新ニュース！", src:"https://archive.org/download/coldroomradio_ep25_completenews/coldroomradio_ep25_completenews.mp3", release_at: "2026-06-14T18:59:00+09:00" },
+  { id:26, title:"<party party>", date:"2026/06/21公開", desc:"マイプレイリスト② W ver.", src:"https://archive.org/download/coldroomradio_ep26_partyparty/coldroomradio_ep26_partyparty.mp3", release_at: "2026-06-21T18:59:00+09:00" },
 ];
