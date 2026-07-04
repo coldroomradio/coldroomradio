@@ -31,5 +31,5 @@ window.EPISODE_LIST = [
   { id:25, title:"<complete news>", date:"2026/06/14公開", desc:"完全版 DISC3!＋最新ニュース！", src:"https://archive.org/download/coldroomradio_ep25_completenews/coldroomradio_ep25_completenews.mp3", release_at: "2026-06-14T18:59:00+09:00" },
   { id:26, title:"<party party>", date:"2026/06/21公開", desc:"マイプレイリスト② W ver.", src:"https://archive.org/download/coldroomradio_ep26_partyparty/coldroomradio_ep26_partyparty.mp3", release_at: "2026-06-21T18:59:00+09:00" },
   { id:27, title:"<movie tour>", date:"2026/06/28公開", desc:"舞台挨拶ツアー!", src:"https://archive.org/download/coldroomradio_ep27_movietour/coldroomradio_ep27_movietour.mp3", release_at: "2026-06-28T18:59:00+09:00" },
-
+  { id:28, title:"<summer news>", date:"2026/07/05公開", desc:"舞台挨拶ツアーのおかわり？雨だから聴く曲!", src:"https://archive.org/download/coldroomradio_ep28_summernews/coldroomradio_ep28_summernews.mp3", release_at: "2026-07-05T18:59:00+09:00" },
 ];
