@@ -32,6 +32,7 @@ window.EPISODE_LIST = [
   { id:26, title:"<party party>", date:"2026/06/21公開", desc:"マイプレイリスト② W ver.", src:"https://archive.org/download/coldroomradio_ep26_partyparty/coldroomradio_ep26_partyparty.mp3", release_at: "2026-06-21T18:59:00+09:00" },
   { id:27, title:"<movie tour>", date:"2026/06/28公開", desc:"舞台挨拶ツアー!", src:"https://archive.org/download/coldroomradio_ep27_movietour/coldroomradio_ep27_movietour.mp3", release_at: "2026-06-28T18:59:00+09:00" },
   { id:28, title:"<summer news>", date:"2026/07/05公開", desc:"舞台挨拶ツアーのおかわり？雨だから聴く曲!", src:"https://archive.org/download/coldroomradio_ep28_summernews/coldroomradio_ep28_summernews.mp3", release_at: "2026-07-05T18:59:00+09:00" },
-  { id:29, title:"<moon story>", date:"2026/07/12公開", desc:"昨年の今日、何があったっけ？一緒に遡って行こう！", src:"https://archive.org/download/coldroomradio_ep29_moonstory/coldroomradio_ep29_moonstory.mp3", release_at: "2026-07-12T18:59:00+09:00" },
+  { id:29, title:"<moon story>", date:"2026/07/12公開", desc:"昨年の今頃、何があったっけ？一緒に遡って行こう！", src:"https://archive.org/download/coldroomradio_ep29_moonstory/coldroomradio_ep29_moonstory.mp3", release_at: "2026-07-12T18:59:00+09:00" },
+  { id:30, title:"<dreams p1>", date:"2026/07/19公開", desc:"みんな、パフュー夢見てる？①", src:"https://archive.org/download/coldroomradio_ep30_dreamsp1/coldroomradio_ep30_dreamsp1.mp3", release_at: "2026-07-19T18:59:00+09:00" },
 
 ];
