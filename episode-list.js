@@ -35,4 +35,6 @@ window.EPISODE_LIST = [
   { id:29, title:"<moon story>", date:"2026/07/12公開", desc:"昨年の今頃、何があったっけ？一緒に遡って行こう！", src:"https://archive.org/download/coldroomradio_ep29_moonstory/coldroomradio_ep29_moonstory.mp3", release_at: "2026-07-12T18:59:00+09:00" },
   { id:30, title:"<dreams p1>", date:"2026/07/19公開", desc:"みんな、「パフュー夢」見てる？①", src:"https://archive.org/download/coldroomradio_ep30_dreamsp1/coldroomradio_ep30_dreamsp1.mp3", release_at: "2026-07-19T18:59:00+09:00" },
   { id:31, title:"<dreams p2>", date:"2026/07/26公開", desc:"みんな、「パフュー夢」見てる？②", src:"https://archive.org/download/coldroomradio_ep31_dreamsp2/coldroomradio_ep31_dreamsp2.mp3", release_at: "2026-07-26T18:59:00+09:00" },
+  { id:32, title:"<music games>", date:"2026/08/02公開", desc:"Perfumeのゲームを作るとしたら！", src:"https://archive.org/download/coldroomradio_ep32_musicgames/coldroomradio_ep32_musicgames.mp3", release_at: "2026-08-02T18:59:00+09:00" },
+
 ];
