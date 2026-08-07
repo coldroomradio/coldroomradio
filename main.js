@@ -1,0 +1,549 @@
+// main.js
+// Page behavior for index.html: episode list rendering, playback, likes,
+// background effects, and analytics. Depends on window.EPISODE_LIST
+// (episode-list.js) and Plyr, both loaded before this script.
+
+(function () {
+  'use strict';
+
+  /* ------------------------------ Release scheduling ------------------------------ */
+
+  function parseReleaseAtToDate(s) {
+    if (!s) return null;
+    try {
+      const d = new Date(s);
+      if (!isNaN(d)) return d;
+    } catch (e) {}
+    // fallback: try yyyy/mm/dd or yyyy-mm-dd
+    const parts = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+    if (parts) return new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), 0, 0, 0);
+    return null;
+  }
+
+  // Note: this is the browser's local time, not necessarily JST. Scheduling
+  // relies on the client's clock (see EPISODE_README.md for the caveat).
+  function getNow() {
+    return new Date();
+  }
+
+  function computeReleased(ep, now) {
+    const releaseDate = parseReleaseAtToDate(ep.release_at || ep.date || null);
+    if (!releaseDate) return !!ep.released;
+    return now.getTime() >= releaseDate.getTime();
+  }
+
+  function getLatestEpisode(list) {
+    const releasedEpisodes = list.filter(ep => ep.released && ep.src);
+    if (releasedEpisodes.length === 0) return null;
+
+    releasedEpisodes.sort((a, b) => {
+      const dateA = a.release_at ? new Date(a.release_at) : new Date(0);
+      const dateB = b.release_at ? new Date(b.release_at) : new Date(0);
+      if (dateA.getTime() !== dateB.getTime()) return dateB - dateA; // newest date first
+      return (b.id || 0) - (a.id || 0); // fallback to id
+    });
+
+    return releasedEpisodes[0];
+  }
+
+  /* ------------------------------ Episode list rendering ------------------------------ */
+
+  const rawEpisodes = window.EPISODE_LIST || [];
+  const elList = document.getElementById('episodes-list');
+  const now = getNow();
+  const episodes = rawEpisodes.map(ep => Object.assign({}, ep, { released: computeReleased(ep, now) }));
+
+  // REVERSE THE LIST
+  episodes.slice().reverse().forEach(ep => {
+    const div = document.createElement('div');
+    div.className = 'episode' + (!ep.released ? ' disabled' : '');
+    div.dataset.episode = `ep${ep.id}`;
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = `#${ep.id} ${ep.title}`;
+
+    const status = document.createElement('div');
+    status.className = 'status';
+    status.textContent = ep.desc;
+
+    const date = document.createElement('div');
+    date.className = 'date';
+    date.textContent = ep.date || '';
+
+    meta.appendChild(title);
+    meta.appendChild(status);
+
+    // place heart to the far right to avoid accidental play clicks
+    const heartWrap = document.createElement('div');
+    heartWrap.className = 'heart-wrap';
+    const heart = document.createElement('button');
+    heart.className = 'heart-btn' + (!ep.released ? ' disabled' : '');
+    // store a concise key so now and list can reference same liked key
+    const episodeKey = `ep${ep.id}`;
+    heart.dataset.episode = episodeKey;
+    heart.innerHTML = `
+      <svg viewBox="0 0 24 24">
+        <path d="M12 21s-6.9-5.5-9.5-9.1C.9 9.6 1.2 6.3 3.6 4.4 5.7 2.8 8.6 3.1 10.3 5c.3.4.6.7.9 1 .3-.3.6-.6.9-1 1.7-1.9 4.6-2.2 6.7-.6 2.4 1.9 2.7 5.2 1.1 7.5C18.9 15.5 12 21 12 21z"/>
+      </svg>
+    `;
+
+    heartWrap.appendChild(heart);
+
+    div.appendChild(meta);
+    div.appendChild(date);
+    div.appendChild(heartWrap);
+
+    // Only make clickable if released
+    if (ep.released && ep.src) {
+      div.addEventListener('click', () => loadEpisode(ep));
+    }
+
+    elList.appendChild(div);
+  });
+
+  const plyr = new Plyr('#audio-player', {
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume']
+  });
+
+  /* ------------------------------ Likes ------------------------------ */
+
+  // track currently playing row key so we can hide it from the list and tag analytics
+  let currentPlayingKey = null;
+
+  const sparklePool = [];
+
+  function createSparkleNode() {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.style.position = 'absolute';
+    el.style.pointerEvents = 'none';
+    el.style.zIndex = '9999';
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function getSparkleNode() {
+    const POOL_MAX = 40;
+    for (const n of sparklePool) if (!n.__inUse) { n.__inUse = true; return n; }
+    if (sparklePool.length < POOL_MAX) {
+      const n = createSparkleNode();
+      n.__inUse = true;
+      sparklePool.push(n);
+      return n;
+    }
+    const n = sparklePool[Math.floor(Math.random() * sparklePool.length)];
+    n.__inUse = true;
+    return n;
+  }
+
+  function releaseSparkleNode(n) {
+    // reset to neutral state so node can be reused safely
+    n.className = 'sparkle';
+    n.style.left = '';
+    n.style.top = '';
+    n.style.width = '';
+    n.style.height = '';
+    n.style.borderLeft = '';
+    n.style.borderRight = '';
+    n.style.borderBottom = '';
+    n.style.background = '';
+    n.innerHTML = '';
+    n.style.animationDelay = '';
+    n.style.animationDuration = '';
+    n.style.transform = '';
+    n.style.zIndex = '';
+    n.classList.remove('sparkle-triangle');
+    if (n.__releaseTimeout) { clearTimeout(n.__releaseTimeout); n.__releaseTimeout = null; }
+    n.__inUse = false;
+  }
+
+  function emitSparkles(clickedBtn) {
+    const rect = clickedBtn.getBoundingClientRect();
+    const docOffsetX = window.pageXOffset || document.documentElement.scrollLeft || 0;
+    const docOffsetY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    const baseX = rect.left + rect.width / 2 + docOffsetX;
+    const baseY = rect.top + rect.height / 2 + docOffsetY;
+
+    const emitCount = 14;
+    for (let i = 0; i < emitCount; i++) {
+      const node = getSparkleNode();
+      const isTriangle = Math.random() < 0.42;
+      if (isTriangle) node.classList.add('sparkle-triangle'); else node.classList.add('sparkle-circle');
+
+      // start near the heart center with a tiny jitter so particles overlap nicely
+      const jitterX = (Math.random() - 0.5) * rect.width * 0.3;
+      const jitterY = (Math.random() - 1.5) * rect.height * 0.3;
+      node.style.left = (baseX + jitterX) + 'px';
+      node.style.top = (baseY + jitterY) + 'px';
+
+      const size = Math.random() * 12 + 3;
+      if (isTriangle) {
+        const variant = Math.random();
+        const colors = [
+          'rgba(107,227,255,0.96)',
+          'rgba(159,223,255,0.92)',
+          'rgba(255,180,255,0.92)'
+        ];
+        const fill = colors[Math.floor(Math.random() * colors.length)];
+
+        const w = Math.round(size + 2);
+        const h = Math.round(size + 2);
+        node.style.width = `${w}px`;
+        node.style.height = `${h}px`;
+        node.style.background = 'transparent';
+
+        const strokeW = Math.max(1, Math.round((size + 2) * 0.18));
+        if (variant < 0.5) {
+          node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="${w / 2},0 ${w},${h} 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+        } else {
+          node.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 ${w},0 0,${h}" fill="none" stroke="${fill}" stroke-width="${strokeW}" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>`;
+        }
+      } else {
+        // smaller, single-color round sparkles (soft warm white)
+        const small = Math.max(2, size * 0.7);
+        node.style.width = `${small}px`;
+        node.style.height = `${small}px`;
+        node.style.background = 'radial-gradient(circle, rgba(255,250,230,0.98) 0%, rgba(255,255,255,0.7) 48%, transparent 75%)';
+      }
+
+      // emit outward from the heart: pick an angle and distance, convert to x/y
+      const angle = Math.random() * Math.PI * 2;
+      const minDist = 28 + Math.random() * 8;
+      const maxDist = 60 + Math.random() * 30;
+      const dist = minDist + Math.random() * (maxDist - minDist);
+      node.style.setProperty('--x', Math.cos(angle) * dist + 'px');
+      node.style.setProperty('--y', Math.sin(angle) * dist + 'px');
+      node.style.setProperty('--curve', (Math.random() * 56 - 28).toString());
+
+      // slightly longer, more consistent durations so sparks linger
+      const dur = 2.4 + Math.random() * 0.8; // 2.4 - 3.2s
+      // Ensure animation restarts when node is reused: clear animation, force reflow, then set durations
+      node.style.animation = 'none';
+      void node.offsetWidth; // force reflow
+      node.style.animationDuration = `${dur}s`;
+      node.style.animationDelay = `${Math.random() * 0.35}s`;
+      node.style.animation = ''; // allow CSS to pick up the base animation name again
+
+      if (node.__releaseTimeout) clearTimeout(node.__releaseTimeout);
+      node.__releaseTimeout = setTimeout(() => releaseSparkleNode(node), (dur + 0.6) * 1000 + Math.random() * 300);
+    }
+  }
+
+  // helper: set visual state of all hearts for an episodeKey
+  function syncHeartState(episodeKey, label) {
+    const key = `liked_${episodeKey}`;
+    const liked = localStorage.getItem(key) === 'true';
+    document.querySelectorAll(`.heart-btn[data-episode="${episodeKey}"]`).forEach(b => {
+      if (liked) b.classList.add('active'); else b.classList.remove('active');
+      // expose pressed state for assistive tech
+      try { b.setAttribute('aria-pressed', liked ? 'true' : 'false'); } catch (e) {}
+      if (label && !b.getAttribute('aria-label')) b.setAttribute('aria-label', label + ' をいいね');
+    });
+  }
+
+  // helper: toggle like state and sync UI + analytics + sparkles on the clicked button
+  function toggleLike(episodeKey, label, clickedBtn) {
+    const key = `liked_${episodeKey}`;
+    const willLike = !(localStorage.getItem(key) === 'true');
+    if (willLike) localStorage.setItem(key, 'true'); else localStorage.removeItem(key);
+    // update all UI
+    syncHeartState(episodeKey, label);
+
+    // Send GA4-friendly event and push helpful debug info
+    try {
+      const gaEventName = willLike ? 'like' : 'like_removed';
+      const gaParams = {
+        content_id: episodeKey,
+        content_title: label || episodeKey,
+        content_type: 'episode',
+        method: 'button'
+      };
+
+      if (window.gtag) {
+        gtag('event', gaEventName, gaParams);
+        console.debug('GA event sent:', gaEventName, gaParams);
+      } else {
+        console.debug('gtag() not available — would send:', gaEventName, gaParams);
+      }
+
+      // also push to dataLayer for debugging/inspection
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: gaEventName, liked: willLike }, gaParams));
+    } catch (e) {
+      console.warn('Error sending GA event', e);
+    }
+
+    if (willLike && clickedBtn) {
+      emitSparkles(clickedBtn);
+      try { clickedBtn.setAttribute('aria-pressed', willLike ? 'true' : 'false'); } catch (e) {}
+    }
+  }
+
+  /* ------------------------------ Playback ------------------------------ */
+
+  function loadEpisode(ep) {
+    if (!ep.src) {
+      alert('このエピソードの音源URLがまだ設定されていません。');
+      return;
+    }
+
+    const srcEl = document.getElementById('audio-source');
+    const audioEl = document.getElementById('audio-player');
+
+    srcEl.src = ep.src;
+    audioEl.load();
+
+    // resume saved position once the new source's metadata is ready
+    // (setting currentTime before load() has no effect — load() resets it)
+    const savedTime = localStorage.getItem(`progress_ep${ep.id}`);
+    if (savedTime) {
+      audioEl.addEventListener('loadedmetadata', function onReady() {
+        audioEl.removeEventListener('loadedmetadata', onReady);
+        audioEl.currentTime = parseFloat(savedTime);
+      });
+    }
+
+    // set playing key before initiating play so analytics can read it
+    const episodeKey = `ep${ep.id}`;
+    currentPlayingKey = episodeKey;
+    // update Now Heart Button
+    const nowHeart = document.querySelector('.now .heart-btn');
+    if (nowHeart) {
+      nowHeart.dataset.episode = episodeKey;
+      nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
+      if (!nowHeart.getAttribute('aria-label')) nowHeart.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
+      const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
+      try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch (e) {}
+    }
+    document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
+    document.getElementById('now-desc').textContent = ep.desc || '';
+    const nowDateEl = document.getElementById('now-date');
+    if (nowDateEl) nowDateEl.textContent = ep.date || '';
+    try { if (window.gtag) gtag('event', 'load_episode', { event_category: 'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch (e) {}
+    syncHeartState(episodeKey, ep.title);
+
+    // hide the matching episode row from the list to avoid duplicate entry
+    try {
+      // show all episode rows first (ensures any previously hidden row returns)
+      document.querySelectorAll('.episode').forEach(n => n.style.display = '');
+      const el = document.querySelector(`.episode[data-episode="${episodeKey}"]`);
+      if (el) el.style.display = 'none';
+    } catch (err) {
+      console.warn('Could not hide/show episode row', err);
+    }
+  }
+
+  const latestReleased = getLatestEpisode(episodes);
+  if (latestReleased) {
+    loadEpisode(latestReleased);
+  }
+
+  /* ------------------------------ Starfield ------------------------------ */
+
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resizeStars() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 0.8 + 0.2,
+      tw: Math.random() * Math.PI * 2,
+      tws: Math.random() * 0.03 + 0.01
+    }));
+  }
+  window.addEventListener('resize', resizeStars);
+  resizeStars();
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.tw += s.tws;
+      const alpha = 0.5 + 0.5 * Math.sin(s.tw);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = '#2bd1ea';
+      ctx.shadowBlur = 8 * alpha;
+      ctx.fill();
+      ctx.restore();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  /* ------------------------------ GA4 enhanced audio tracking ------------------------------ */
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const player = document.getElementById('audio-player');
+    setInterval(() => {
+      if (!player.paused && currentPlayingKey) {
+        localStorage.setItem(`progress_${currentPlayingKey}`, player.currentTime);
+        localStorage.setItem('lastPlayedKey', currentPlayingKey);
+      }
+    }, 5000);
+
+    const checkpoints = [25, 50, 75, 90];
+    const sent = {};
+    let lastTime = 0;
+    let listenStart = null;
+
+    function getEpisodeInfo() {
+      // prefer explicit currentPlayingKey, then now heart dataset, then fallback to source filename
+      const nowHeart = document.querySelector('.now .heart-btn');
+      const srcEl = document.getElementById('audio-source');
+      const title = document.getElementById('now-title')?.textContent || srcEl?.dataset?.title || srcEl?.src?.split('/').pop() || 'unknown';
+      const id = currentPlayingKey || (nowHeart && nowHeart.dataset && nowHeart.dataset.episode) || null;
+      return { id: id || 'unknown', title };
+    }
+
+    function pushGtag(eventName, params = {}) {
+      // ensure we always attach helpful defaults
+      const ep = getEpisodeInfo();
+      const base = {
+        event_category: 'audio',
+        content_type: 'episode',
+        content_id: ep.id,
+        content_title: ep.title
+      };
+      const payload = Object.assign({}, base, params);
+      if (window.gtag) {
+        try { gtag('event', eventName, payload); } catch (e) { console.warn('gtag error', e); }
+      }
+      // always push to dataLayer for visibility even if gtag isn't ready
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: eventName }, payload));
+      console.debug('GA event:', eventName, payload);
+    }
+
+    function sendListenTime() {
+      if (!listenStart) return;
+      const sec = Math.floor((Date.now() - listenStart) / 1000);
+      listenStart = null;
+      if (sec > 2) pushGtag('listen_time', { seconds_listened: sec });
+    }
+
+    // Wire player events with episode-aware params
+    plyr.on('play', () => {
+      listenStart = Date.now();
+      pushGtag('play', { position_sec: Math.floor(player.currentTime) });
+    });
+
+    plyr.on('pause', () => {
+      sendListenTime();
+      pushGtag('pause', { position_sec: Math.floor(player.currentTime) });
+    });
+
+    plyr.on('seeked', () => {
+      pushGtag('seek', { from_sec: Math.floor(lastTime), to_sec: Math.floor(player.currentTime) });
+    });
+
+    plyr.on('ended', () => {
+      sendListenTime();
+      pushGtag('complete', { duration_sec: Math.floor(player.duration), position_sec: Math.floor(player.currentTime) });
+    });
+
+    plyr.on('timeupdate', () => {
+      if (!player.duration) return;
+      const percent = (player.currentTime / player.duration) * 100;
+      checkpoints.forEach(cp => {
+        if (percent >= cp && !sent[cp]) {
+          pushGtag('progress', { milestone_pct: cp, position_sec: Math.floor(player.currentTime) });
+          sent[cp] = true;
+        }
+      });
+      lastTime = player.currentTime;
+    });
+  });
+
+  /* ------------------------------ Random background gradient ------------------------------ */
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const layer = document.querySelector('.bg-layer');
+    if (!layer) return;
+    const colors = [
+      'rgba(255,90,255,0.08)',
+      'rgba(0,255,190,0.06)',
+      'rgba(180,100,255,0.07)',
+      'rgba(120,255,180,0.05)',
+      'rgba(255,180,255,0.04)'
+    ];
+    const shuffled = colors.sort(() => 0.5 - Math.random());
+    const randomGradient = (color) => {
+      const x = Math.floor(Math.random() * 100);
+      const y = Math.floor(Math.random() * 100);
+      const size = Math.floor(Math.random() * 40 + 60);
+      return `radial-gradient(ellipse at ${x}% ${y}%, ${color}, transparent ${size}%)`;
+    };
+    const randomGradients = shuffled.map(c => randomGradient(c)).join(',');
+    const darkSpace = 'linear-gradient(180deg, #03040a 0%, #050612 60%, #0a101a 100%)';
+    layer.style.background = randomGradients + ',' + darkSpace;
+    layer.style.backgroundBlendMode = 'screen, overlay, normal';
+    layer.style.backgroundSize = '200% 200%';
+    layer.style.animation = 'drift 25s ease-in-out infinite alternate';
+  });
+
+  /* ------------------------------ Message draft autosave ------------------------------ */
+
+  const msgBox = document.getElementById('message');
+  msgBox?.addEventListener('input', () => {
+    localStorage.setItem('draftMessage', msgBox.value);
+  });
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('draftMessage');
+    if (saved) msgBox.value = saved;
+  });
+  document.getElementById('contact-form')?.addEventListener('submit', () => {
+    localStorage.removeItem('draftMessage');
+  });
+
+  /* ------------------------------ Heart button wiring ------------------------------ */
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // initialize hearts: wire up clicks and hydrate from localStorage using global helpers
+    document.querySelectorAll('.heart-btn').forEach(btn => {
+      const episodeKey = btn.dataset.episode || 'current';
+      const saved = localStorage.getItem(`liked_${episodeKey}`);
+      if (saved === 'true') btn.classList.add('active');
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = btn.dataset.episode || 'current';
+        const label = btn.dataset.title || btn.getAttribute('aria-label') || key;
+        toggleLike(key, label, btn);
+      });
+    });
+  });
+
+  /* ------------------------------ FAQ toggle ------------------------------ */
+
+  function toggleFaq(item) {
+    const isActive = item.classList.toggle('active');
+    const question = item.querySelector('.faq-question');
+    if (question) question.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+  }
+
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => toggleFaq(q.parentElement));
+    q.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggleFaq(q.parentElement);
+      }
+    });
+  });
+})();

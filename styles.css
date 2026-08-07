@@ -214,18 +214,12 @@ a{color:inherit}
 
 .now .bar {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.now .bar {
-  display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.03); 
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -298,7 +292,7 @@ a{color:inherit}
   position:relative;
   display:flex;
   align-items:center;
-  gap:14px;
+  gap:16px;
   padding:12px 16px;
   border-radius:10px;
   background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
@@ -317,14 +311,6 @@ a{color:inherit}
   opacity:.7
 }
 
-.episode .meta{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:4px
-}
-
 .episode .title{
   font-weight:600;
   margin:0;
@@ -336,18 +322,6 @@ a{color:inherit}
   color:var(--muted);
   margin:0;
   line-height:1.2
-}
-
-.episode .title-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  margin-bottom:2px
-}
-
-.episode .date{
-  font-size:13px;
-  color:var(--muted)
 }
 
 /* ---------------- Heart Button ---------------- */
@@ -513,13 +487,6 @@ footer{
   display:block
 }
 
-
-.episode {
-    display: flex;
-    align-items: center; 
-    padding: 12px 16px;
-    gap: 16px; 
-}
 
 .episode .meta {
     flex: 1; 
