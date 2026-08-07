@@ -546,4 +546,20 @@
       }
     });
   });
+
+  /* ------------------------------ Coldsleep day counter ------------------------------ */
+  // Perfume's coldsleep began 2026-01-01 00:00 JST (see episode #2, "コールドスリープ開始")
+
+  const COLDSLEEP_START = new Date('2026-01-01T00:00:00+09:00');
+
+  function coldsleepDay(now) {
+    const diffMs = now.getTime() - COLDSLEEP_START.getTime();
+    return Math.floor(diffMs / 86400000) + 1;
+  }
+
+  const coldsleepDaysEl = document.getElementById('coldsleep-days');
+  if (coldsleepDaysEl) {
+    const day = coldsleepDay(getNow());
+    coldsleepDaysEl.textContent = day > 0 ? day : '-';
+  }
 })();
