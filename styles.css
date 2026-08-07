@@ -159,6 +159,31 @@ a{color:inherit}
   display: inline-block;
 }
 
+.coldsleep-counter{
+  display:inline-flex;
+  align-items:baseline;
+  gap:8px;
+  margin:20px auto 0;
+  padding:8px 18px;
+  border-radius:999px;
+  background:rgba(107,227,255,0.06);
+  border:1px solid rgba(107,227,255,0.25);
+  box-shadow:0 0 24px rgba(107,227,255,0.12), inset 0 0 12px rgba(107,227,255,0.06);
+}
+
+.coldsleep-counter-label{
+  font-size:13px;
+  letter-spacing:.04em;
+  color:var(--muted);
+}
+
+.coldsleep-counter-days{
+  font-size:22px;
+  font-weight:600;
+  color:var(--accent);
+  text-shadow:0 0 12px rgba(107,227,255,0.6);
+}
+
 .card{
   margin-top:28px;
   padding:20px;
