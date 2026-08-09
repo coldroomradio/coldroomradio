@@ -36,5 +36,6 @@ window.EPISODE_LIST = [
   { id:30, title:"<dreams p1>", date:"2026/07/19公開", desc:"みんな、「パフュー夢」見てる？①", src:"https://archive.org/download/coldroomradio_ep30_dreamsp1/coldroomradio_ep30_dreamsp1.mp3", release_at: "2026-07-19T18:59:00+09:00" },
   { id:31, title:"<dreams p2>", date:"2026/07/26公開", desc:"みんな、「パフュー夢」見てる？②", src:"https://archive.org/download/coldroomradio_ep31_dreamsp2/coldroomradio_ep31_dreamsp2.mp3", release_at: "2026-07-26T18:59:00+09:00" },
   { id:32, title:"<music games>", date:"2026/08/02公開", desc:"Perfumeのゲームを作るとしたら...", src:"https://archive.org/download/coldroomradio_ep32_musicgames/coldroomradio_ep32_musicgames.mp3", release_at: "2026-08-02T18:59:00+09:00" },
+  { id:33, title:"<foreign place>", date:"2026/08/09公開", desc:"思わぬところでPerfume!", src:"https://archive.org/download/coldroomradio_ep33_foreignplace/coldroomradio_ep33_foreignplace.mp3", release_at: "2026-08-09T18:59:00+09:00" },
 
 ];
