@@ -342,13 +342,39 @@
     loadEpisode(latestReleased);
   }
 
-  /* ------------------------------ Starfield ------------------------------ */
+  /* ------------------------------ Snowfall ------------------------------ */
 
-  const canvas = document.getElementById('stars');
+  const canvas = document.getElementById('snowfall');
   const ctx = canvas.getContext('2d');
-  let stars = [];
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let flakes = [];
 
-  function resizeStars() {
+  // depth simulates distance: farther flakes are smaller, slower, dimmer,
+  // and plain dots; only the closest ~15% get the branched crystal shape.
+  // A rare ~6% are "big" flakes on top of that — noticeably larger and
+  // always crystal-shaped, for occasional visual interest.
+  function spawnFlake(randomY) {
+    const depth = Math.random();
+    const big = Math.random() < 0.06;
+    return {
+      x: Math.random() * window.innerWidth,
+      y: randomY ? Math.random() * window.innerHeight : -10,
+      r: (0.4 + depth * 1.2) * (big ? 2.4 : 1),
+      speed: (0.2 + depth * 0.7) * 0.45,
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.006 + Math.random() * 0.01,
+      swayAmp: 8 + depth * 14,
+      angle: Math.random() * Math.PI,
+      spin: (Math.random() - 0.5) * 0.01,
+      alpha: (0.15 + depth * 0.3) * (big ? 1.4 : 1),
+      crystal: big || depth > 0.85,
+      // random-walk turbulence layered on top of the smooth sway, damped
+      // so it wanders unpredictably instead of drifting off
+      drift: 0
+    };
+  }
+
+  function resizeSnow() {
     const dpr = window.devicePixelRatio || 1;
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
@@ -356,35 +382,77 @@
     canvas.style.height = window.innerHeight + 'px';
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
-    stars = Array.from({ length: 90 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 0.8 + 0.2,
-      tw: Math.random() * Math.PI * 2,
-      tws: Math.random() * 0.03 + 0.01
-    }));
+    flakes = Array.from({ length: 40 }, () => spawnFlake(true));
   }
-  window.addEventListener('resize', resizeStars);
-  resizeStars();
+  window.addEventListener('resize', resizeSnow);
+  resizeSnow();
 
-  function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    stars.forEach(s => {
-      s.tw += s.tws;
-      const alpha = 0.5 + 0.5 * Math.sin(s.tw);
-      ctx.save();
-      ctx.globalAlpha = alpha;
+  function drawCrystal(x, y, f) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(f.angle);
+    ctx.strokeStyle = `rgba(223,246,255,${f.alpha})`;
+    ctx.lineWidth = 0.5;
+    const armLen = f.r * 2.2;
+    for (let i = 0; i < 6; i++) {
+      ctx.rotate(Math.PI / 3);
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.shadowColor = '#2bd1ea';
-      ctx.shadowBlur = 8 * alpha;
-      ctx.fill();
-      ctx.restore();
-    });
-    requestAnimationFrame(drawStars);
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, armLen);
+      ctx.moveTo(0, armLen * 0.55);
+      ctx.lineTo(armLen * 0.28, armLen * 0.75);
+      ctx.moveTo(0, armLen * 0.55);
+      ctx.lineTo(-armLen * 0.28, armLen * 0.75);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
-  drawStars();
+
+  function renderFlake(f) {
+    const x = f.x + Math.sin(f.sway) * f.swayAmp * 0.02 + f.drift;
+    ctx.save();
+    ctx.globalAlpha = f.alpha;
+    ctx.shadowColor = '#6be3ff';
+    ctx.shadowBlur = 2;
+    if (f.crystal) {
+      drawCrystal(x, f.y, f);
+    } else {
+      ctx.beginPath();
+      ctx.arc(x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function renderSnowFrame() {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    flakes.forEach(renderFlake);
+  }
+
+  function stepSnow() {
+    const h = window.innerHeight;
+    flakes.forEach(f => {
+      f.sway += f.swaySpeed;
+      f.y += f.speed;
+      f.angle += f.spin;
+      // turbulence: small random impulse each frame, damped so it wanders
+      // instead of running away
+      f.drift = (f.drift + (Math.random() - 0.5) * 0.12) * 0.995;
+      if (f.y - f.r > h) Object.assign(f, spawnFlake(false));
+    });
+  }
+
+  function drawSnow() {
+    stepSnow();
+    renderSnowFrame();
+    requestAnimationFrame(drawSnow);
+  }
+
+  // reduced-motion users still get a static frame of flakes at their
+  // spawn positions, just no continuous falling animation.
+  renderSnowFrame();
+  if (!prefersReducedMotion) drawSnow();
 
   /* ------------------------------ GA4 enhanced audio tracking ------------------------------ */
 
