@@ -39,4 +39,5 @@ window.EPISODE_LIST = [
   { id:33, title:"<foreign place>", date:"2026/08/09公開", desc:"思わぬところでPerfume!", src:"https://archive.org/download/coldroomradio_ep33_foreignplace/coldroomradio_ep33_foreignplace.mp3", release_at: "2026-08-09T18:59:00+09:00" },
   { id:34, title:"<subs voice>", date:"2026/08/16公開", desc:"みんな、サブスクに入った？", src:"https://archive.org/download/coldroomradio_ep34_subsvoice/coldroomradio_ep34_subsvoice.mp3", release_at: "2026-08-16T18:59:00+09:00" },
   { id:35, title:"<home plasma>", date:"2026/08/23公開", desc:"ドキュメンタリーもサブスクに！！", src:"https://archive.org/download/coldroomradio_ep35_homeplasma/coldroomradio_ep35_homeplasma.mp3", release_at: "2026-08-23T18:59:00+09:00" },
+  { id:36, title:"<alpha live>", date:"2026/08/30公開", desc:"Perfumeαについて喋りまくる！", src:"https://archive.org/download/coldroomradio_ep36_alphalive/coldroomradio_ep36_alphalive.mp3", release_at: "2026-08-30T18:59:00+09:00" },
 ];
