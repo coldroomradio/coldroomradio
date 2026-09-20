@@ -42,4 +42,5 @@ window.EPISODE_LIST = [
   { id:36, title:"<alpha live>", date:"2026/08/30公開", desc:"Perfumeαについて喋りまくる！", src:"https://archive.org/download/coldroomradio_ep36_alphalive/coldroomradio_ep36_alphalive.mp3", release_at: "2026-08-30T18:59:00+09:00" },
   { id:37, title:"<hello sea>", date:"2026/09/06公開", desc:"マーメイドゆかちゃん癒されるね〜", src:"https://archive.org/download/coldroomradio_ep37_hellosea/coldroomradio_ep37_hellosea.mp3", release_at: "2026-09-06T18:59:00+09:00" },
   { id:38, title:"<my calendar>", date:"2026/09/13公開", desc:"来年のカレンダーどうなるの？", src:"https://archive.org/download/coldroomradio_ep38_mycalendar/coldroomradio_ep38_mycalendar.mp3", release_at: "2026-09-13T18:59:00+09:00" },
+  { id:39, title:"<HappyBirthdayN>", date:"2026/09/20公開", desc:"のっちお誕生日おめでとう！！！", src:"https://archive.org/download/coldroomradio_ep39_happybirthdayn/coldroomradio_ep39_happybirthdayn.mp3", release_at: "2026-09-20T18:59:00+09:00" },
 ];
