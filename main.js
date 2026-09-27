@@ -109,6 +109,122 @@
     controls: ['play', 'progress', 'current-time', 'mute', 'volume']
   });
 
+  /* ------------------------------ ±15s seek buttons ------------------------------ */
+  // custom circled "15" icons (shared visual language with the mini player),
+  // used instead of Plyr's default rewind/fast-forward icons for consistency
+
+  const REWIND_15_ICON = '<path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16.5" font-size="8.5" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">15</text>';
+  const FORWARD_15_ICON = '<path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16.5" font-size="8.5" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">15</text>';
+
+  function createSeekButton(iconInner, label, deltaSec) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'plyr__control';
+    btn.setAttribute('aria-label', label);
+    btn.innerHTML = `<svg viewBox="0 0 24 24">${iconInner}</svg>`;
+    btn.addEventListener('click', () => {
+      const audioEl = document.getElementById('audio-player');
+      const max = audioEl.duration || Infinity;
+      audioEl.currentTime = Math.min(max, Math.max(0, audioEl.currentTime + deltaSec));
+    });
+    return btn;
+  }
+
+  (function setupSeekButtons() {
+    const controlsBar = document.querySelector('#player-wrap .plyr__controls');
+    if (!controlsBar) return;
+    const playBtn = controlsBar.querySelector('[data-plyr="play"]');
+    const rewindBtn = createSeekButton(REWIND_15_ICON, '15秒戻る', -15);
+    const forwardBtn = createSeekButton(FORWARD_15_ICON, '15秒進む', 15);
+    if (playBtn) {
+      playBtn.insertAdjacentElement('beforebegin', rewindBtn);
+      playBtn.insertAdjacentElement('afterend', forwardBtn);
+    } else {
+      controlsBar.prepend(rewindBtn);
+      controlsBar.appendChild(forwardBtn);
+    }
+  })();
+
+  /* ------------------------------ Speed control ------------------------------ */
+
+  const SPEEDS = [1, 1.5, 2];
+  const speedUISyncs = [];
+
+  function applySpeed(rate) {
+    plyr.speed = rate;
+    try { localStorage.setItem('playbackRate', String(rate)); } catch (e) {}
+  }
+
+  // turns an existing button into a speed-select control with a popover menu;
+  // wraps it in a positioning container if its parent doesn't already provide one
+  function attachSpeedMenu(btn) {
+    let container = btn.parentElement;
+    if (!container || !container.classList.contains('speed-control')) {
+      container = document.createElement('div');
+      container.className = 'speed-control';
+      btn.parentNode.insertBefore(container, btn);
+      container.appendChild(btn);
+    }
+
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    const menu = document.createElement('div');
+    menu.className = 'speed-menu';
+    SPEEDS.forEach(rate => {
+      const opt = document.createElement('button');
+      opt.type = 'button';
+      opt.textContent = `${rate}x`;
+      opt.dataset.speed = String(rate);
+      if (rate === 1) opt.classList.add('active');
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        applySpeed(rate);
+        closeMenu();
+      });
+      menu.appendChild(opt);
+    });
+    container.appendChild(menu);
+
+    function openMenu() { menu.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+    function closeMenu() { menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.contains('open') ? closeMenu() : openMenu();
+    });
+    document.addEventListener('click', closeMenu);
+
+    function syncUI(rate) {
+      btn.textContent = `${rate}x`;
+      menu.querySelectorAll('button').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.speed) === rate));
+    }
+    speedUISyncs.push(syncUI);
+  }
+
+  plyr.on('ratechange', () => speedUISyncs.forEach(sync => sync(plyr.speed)));
+
+  (function setupSpeedControls() {
+    const controlsBar = document.querySelector('#player-wrap .plyr__controls');
+    if (controlsBar) {
+      const mainBtn = document.createElement('button');
+      mainBtn.type = 'button';
+      mainBtn.className = 'speed-control-btn plyr__control';
+      mainBtn.textContent = '1x';
+      mainBtn.setAttribute('aria-label', '再生速度を変更');
+      controlsBar.appendChild(mainBtn);
+      attachSpeedMenu(mainBtn);
+    }
+
+    const miniBtn = document.getElementById('mini-player-speed');
+    if (miniBtn) attachSpeedMenu(miniBtn);
+
+    try {
+      const savedRate = parseFloat(localStorage.getItem('playbackRate'));
+      if (SPEEDS.includes(savedRate)) applySpeed(savedRate);
+    } catch (e) {}
+  })();
+
   /* ------------------------------ Likes ------------------------------ */
 
   // track currently playing row key so we can hide it from the list and tag analytics
@@ -285,11 +401,25 @@
 
   /* ------------------------------ Playback ------------------------------ */
 
-  function loadEpisode(ep) {
+  let currentEpisode = null;
+
+  // next released, playable episode after the given one (by id order)
+  function getNextEpisode(ep) {
+    if (!ep) return null;
+    const candidates = episodes
+      .filter(e => e.released && e.src && e.id > ep.id)
+      .sort((a, b) => a.id - b.id);
+    return candidates[0] || null;
+  }
+
+  function loadEpisode(ep, opts) {
+    opts = opts || {};
     if (!ep.src) {
       alert('このエピソードの音源URLがまだ設定されていません。');
       return;
     }
+
+    currentEpisode = ep;
 
     const srcEl = document.getElementById('audio-source');
     const audioEl = document.getElementById('audio-player');
@@ -307,18 +437,26 @@
       });
     }
 
+    if (opts.autoplay) {
+      audioEl.addEventListener('canplay', function onCanPlay() {
+        audioEl.removeEventListener('canplay', onCanPlay);
+        audioEl.play().catch(() => {});
+      });
+    }
+
     // set playing key before initiating play so analytics can read it
     const episodeKey = `ep${ep.id}`;
     currentPlayingKey = episodeKey;
-    // update Now Heart Button
-    const nowHeart = document.querySelector('.now .heart-btn');
-    if (nowHeart) {
-      nowHeart.dataset.episode = episodeKey;
-      nowHeart.dataset.title = `#${ep.id} ${ep.title}`;
-      if (!nowHeart.getAttribute('aria-label')) nowHeart.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
-      const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
-      try { nowHeart.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch (e) {}
-    }
+    try { localStorage.setItem('lastPlayedKey', episodeKey); } catch (e) {}
+    updateMiniPlayer(ep);
+    // update heart buttons that track the currently loaded episode (now bar + mini player)
+    const stored = localStorage.getItem(`liked_${episodeKey}`) === 'true';
+    document.querySelectorAll('.current-heart-btn').forEach(heartBtn => {
+      heartBtn.dataset.episode = episodeKey;
+      heartBtn.dataset.title = `#${ep.id} ${ep.title}`;
+      heartBtn.setAttribute('aria-label', `いいね #${ep.id} ${ep.title}`);
+      try { heartBtn.setAttribute('aria-pressed', stored ? 'true' : 'false'); } catch (e) {}
+    });
     document.getElementById('now-title').textContent = `#${ep.id} ${ep.title}`;
     document.getElementById('now-desc').textContent = ep.desc || '';
     const nowDateEl = document.getElementById('now-date');
@@ -337,9 +475,130 @@
     }
   }
 
+  /* ------------------------------ Mini player ------------------------------ */
+
+  const miniPlayer = document.getElementById('mini-player');
+  const miniPlayerTitle = document.getElementById('mini-player-title');
+  const miniPlayerToggle = document.getElementById('mini-player-toggle');
+  const miniPlayerRewind = document.getElementById('mini-player-rewind');
+  const miniPlayerForward = document.getElementById('mini-player-forward');
+  const miniPlayerPlayIcon = document.getElementById('mini-player-play-icon');
+  const miniPlayerPauseIcon = document.getElementById('mini-player-pause-icon');
+  const miniPlayerSeek = document.getElementById('mini-player-seek');
+  const miniPlayerCurrentTime = document.getElementById('mini-player-current-time');
+  const miniPlayerDuration = document.getElementById('mini-player-duration');
+  const miniPlayerMute = document.getElementById('mini-player-mute');
+  const miniPlayerVolumeIcon = document.getElementById('mini-player-volume-icon');
+  const miniPlayerMutedIcon = document.getElementById('mini-player-muted-icon');
+  const miniPlayerVolume = document.getElementById('mini-player-volume');
+
+  function updateMiniPlayer(ep) {
+    if (miniPlayerTitle) miniPlayerTitle.textContent = `#${ep.id} ${ep.title}`;
+  }
+
+  function setMiniPlayerPlaying(isPlaying) {
+    if (miniPlayerPlayIcon) miniPlayerPlayIcon.style.display = isPlaying ? 'none' : '';
+    if (miniPlayerPauseIcon) miniPlayerPauseIcon.style.display = isPlaying ? '' : 'none';
+  }
+
+  function formatTime(sec) {
+    if (!isFinite(sec) || sec < 0) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  miniPlayerToggle?.addEventListener('click', () => {
+    plyr.togglePlay();
+  });
+
+  miniPlayerRewind?.addEventListener('click', () => {
+    const audioEl = document.getElementById('audio-player');
+    audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+  });
+
+  miniPlayerForward?.addEventListener('click', () => {
+    const audioEl = document.getElementById('audio-player');
+    const max = audioEl.duration || Infinity;
+    audioEl.currentTime = Math.min(max, audioEl.currentTime + 15);
+  });
+
+  plyr.on('play', () => setMiniPlayerPlaying(true));
+  plyr.on('pause', () => setMiniPlayerPlaying(false));
+  plyr.on('ended', () => setMiniPlayerPlaying(false));
+
+  // seek slider: track user dragging so timeupdate doesn't fight the drag
+  let miniPlayerSeeking = false;
+  miniPlayerSeek?.addEventListener('input', () => { miniPlayerSeeking = true; });
+  miniPlayerSeek?.addEventListener('change', () => {
+    const audioEl = document.getElementById('audio-player');
+    if (audioEl.duration) audioEl.currentTime = (parseFloat(miniPlayerSeek.value) / 100) * audioEl.duration;
+    miniPlayerSeeking = false;
+  });
+
+  plyr.on('timeupdate', () => {
+    const audioEl = document.getElementById('audio-player');
+    if (!audioEl.duration) return;
+    if (!miniPlayerSeeking && miniPlayerSeek) miniPlayerSeek.value = String((audioEl.currentTime / audioEl.duration) * 100);
+    if (miniPlayerCurrentTime) miniPlayerCurrentTime.textContent = formatTime(audioEl.currentTime);
+  });
+
+  plyr.on('durationchange', () => {
+    const audioEl = document.getElementById('audio-player');
+    if (miniPlayerDuration) miniPlayerDuration.textContent = formatTime(audioEl.duration);
+  });
+
+  // mute + volume: bind straight to the media element, native volumechange keeps everything in sync
+  function syncMiniVolumeUI() {
+    const audioEl = document.getElementById('audio-player');
+    if (miniPlayerVolume) miniPlayerVolume.value = String(audioEl.muted ? 0 : audioEl.volume);
+    if (miniPlayerVolumeIcon) miniPlayerVolumeIcon.style.display = audioEl.muted ? 'none' : '';
+    if (miniPlayerMutedIcon) miniPlayerMutedIcon.style.display = audioEl.muted ? '' : 'none';
+  }
+
+  miniPlayerMute?.addEventListener('click', () => {
+    const audioEl = document.getElementById('audio-player');
+    audioEl.muted = !audioEl.muted;
+  });
+
+  miniPlayerVolume?.addEventListener('input', () => {
+    const audioEl = document.getElementById('audio-player');
+    audioEl.volume = parseFloat(miniPlayerVolume.value);
+    audioEl.muted = false;
+  });
+
+  plyr.on('volumechange', syncMiniVolumeUI);
+  syncMiniVolumeUI();
+
+  // show the mini player once the main player card scrolls out of view
+  const playerCard = document.querySelector('section.card[aria-label="プレイヤー"]');
+  if (playerCard && miniPlayer && 'IntersectionObserver' in window) {
+    const playerObserver = new IntersectionObserver(
+      ([entry]) => { miniPlayer.classList.toggle('visible', !entry.isIntersecting); },
+      { threshold: 0 }
+    );
+    playerObserver.observe(playerCard);
+  }
+
+  miniPlayerTitle?.addEventListener('click', () => {
+    playerCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  function getEpisodeByKey(key) {
+    if (!key) return null;
+    const match = key.match(/^ep(\d+)$/);
+    if (!match) return null;
+    const id = Number(match[1]);
+    return episodes.find(e => e.id === id && e.released && e.src) || null;
+  }
+
   const latestReleased = getLatestEpisode(episodes);
-  if (latestReleased) {
-    loadEpisode(latestReleased);
+  let lastPlayedKey = null;
+  try { lastPlayedKey = localStorage.getItem('lastPlayedKey'); } catch (e) {}
+  const resumeEpisode = getEpisodeByKey(lastPlayedKey);
+  const initialEpisode = resumeEpisode || latestReleased;
+  if (initialEpisode) {
+    loadEpisode(initialEpisode);
   }
 
   /* ------------------------------ Snowfall ------------------------------ */
@@ -523,6 +782,18 @@
     plyr.on('ended', () => {
       sendListenTime();
       pushGtag('complete', { duration_sec: Math.floor(player.duration), position_sec: Math.floor(player.currentTime) });
+
+      // episode finished: clear its saved position so it doesn't resume at the end next time
+      if (currentPlayingKey) {
+        try { localStorage.removeItem(`progress_${currentPlayingKey}`); } catch (e) {}
+      }
+
+      // continue listening: auto-advance to the next released episode
+      const next = getNextEpisode(currentEpisode);
+      if (next) {
+        pushGtag('autoplay_next', { content_id: `ep${next.id}` });
+        loadEpisode(next, { autoplay: true });
+      }
     });
 
     plyr.on('timeupdate', () => {
