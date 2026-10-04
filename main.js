@@ -779,6 +779,10 @@
       pushGtag('seek', { from_sec: Math.floor(lastTime), to_sec: Math.floor(player.currentTime) });
     });
 
+    plyr.on('ratechange', () => {
+      pushGtag('playback_speed_change', { speed: player.playbackRate });
+    });
+
     plyr.on('ended', () => {
       sendListenTime();
       pushGtag('complete', { duration_sec: Math.floor(player.duration), position_sec: Math.floor(player.currentTime) });
