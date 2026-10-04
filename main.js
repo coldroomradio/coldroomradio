@@ -461,6 +461,22 @@
     document.getElementById('now-desc').textContent = ep.desc || '';
     const nowDateEl = document.getElementById('now-date');
     if (nowDateEl) nowDateEl.textContent = ep.date || '';
+
+    // the "now" card always reflects whatever is loaded (resumed or just-picked),
+    // so its label and the "new episode available" nudge must stay truthful to that
+    const nowLabelEl = document.getElementById('now-label');
+    const newEpisodeBtn = document.getElementById('now-new-episode');
+    const isLatest = !latestReleased || ep.id === latestReleased.id;
+    if (nowLabelEl) nowLabelEl.textContent = isLatest ? '最新のエピソード' : '再生中';
+    if (newEpisodeBtn) {
+      if (!isLatest && latestReleased) {
+        const titleEl = document.getElementById('now-new-episode-title');
+        if (titleEl) titleEl.textContent = `#${latestReleased.id} ${latestReleased.title}`;
+        newEpisodeBtn.hidden = false;
+      } else {
+        newEpisodeBtn.hidden = true;
+      }
+    }
     try { if (window.gtag) gtag('event', 'load_episode', { event_category: 'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch (e) {}
     syncHeartState(episodeKey, ep.title);
 
@@ -600,6 +616,10 @@
   if (initialEpisode) {
     loadEpisode(initialEpisode);
   }
+
+  document.getElementById('now-new-episode')?.addEventListener('click', () => {
+    if (latestReleased) loadEpisode(latestReleased, { autoplay: true });
+  });
 
   /* ------------------------------ Snowfall ------------------------------ */
 
