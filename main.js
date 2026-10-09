@@ -925,4 +925,13 @@
     const day = coldsleepDay(getNow());
     coldsleepDaysEl.textContent = day > 0 ? day : '-';
   }
+
+  /* ------------------------------ 1st anniversary badge ------------------------------ */
+  // Shown through 2026-10-31 (JST), hidden from 2026-11-01 00:00 JST.
+
+  const ANNIVERSARY_BADGE_UNTIL = new Date('2026-11-01T00:00:00+09:00');
+  const anniversaryBadge = document.getElementById('anniversary-badge');
+  if (anniversaryBadge && getNow() < ANNIVERSARY_BADGE_UNTIL) {
+    anniversaryBadge.hidden = false;
+  }
 })();

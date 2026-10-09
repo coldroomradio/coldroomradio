@@ -185,6 +185,46 @@ a{color:inherit}
   text-shadow:0 0 12px rgba(107,227,255,0.6);
 }
 
+.anniversary-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin:0 auto 16px;
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:.2em;
+}
+.anniversary-badge[hidden]{display:none}
+
+.anniversary-badge::before,
+.anniversary-badge::after{
+  content:"";
+  width:44px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#f4c95d);
+}
+.anniversary-badge::after{transform:scaleX(-1)}
+
+.anniversary-badge-text{
+  background:linear-gradient(100deg,#f4c95d 0%,#f4c95d 38%,#fff6cf 50%,#f4c95d 62%,#f4c95d 100%);
+  background-size:250% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  filter:drop-shadow(0 0 8px rgba(244,201,93,0.45));
+  animation:anniversary-shimmer 5s ease-in-out infinite;
+}
+
+@keyframes anniversary-shimmer{
+  0%{background-position:100% 0}
+  60%,100%{background-position:0 0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .anniversary-badge-text{animation:none}
+}
+
 .card{
   margin-top:28px;
   padding:20px;
