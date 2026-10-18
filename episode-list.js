@@ -46,4 +46,5 @@ window.EPISODE_LIST = [
   { id:40, title:"<dream wedding>", date:"2026/09/27公開", desc:"あ〜ちゃんおめでとう！！", src:"https://archive.org/download/coldroomradio_ep40_dreamwedding/coldroomradio_ep40_dreamwedding.mp3", release_at: "2026-09-27T18:59:00+09:00" },
   { id:41, title:"<Side Z>", date:"2026/10/04公開", desc:"ブームに乗ってSide Zを組んでみた！", src:"https://archive.org/download/coldroomradio_ep41_sidez/coldroomradio_ep41_sidez.mp3", release_at: "2026-10-04T18:59:00+09:00" },
   { id:42, title:"<Side W>", date:"2026/10/11公開", desc:"ブームに乗ってSide Wを組んでみた！", src:"https://archive.org/download/coldroomradio_ep42_sidew/coldroomradio_ep42_sidew.mp3", release_at: "2026-10-11T18:59:00+09:00" },
+  { id:43, title:"<1 year anniversary>", date:"2026/10/18公開", desc:"初放送から今日までをふりかえる！", src:"https://archive.org/download/coldroomradio_ep43_1yearanniversary/coldroomradio_ep43_1yearanniversary.mp3", release_at: "2026-10-18T18:59:00+09:00" },
 ];
