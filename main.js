@@ -364,6 +364,12 @@
   }
 
   // helper: toggle like state and sync UI + analytics + sparkles on the clicked button
+  // 'ep41' -> 41, so episodes can be sorted and compared numerically in GA4
+  function episodeNumberFromKey(key) {
+    const m = /^ep(\d+)$/.exec(key || '');
+    return m ? Number(m[1]) : undefined;
+  }
+
   function toggleLike(episodeKey, label, clickedBtn) {
     const key = `liked_${episodeKey}`;
     const willLike = !(localStorage.getItem(key) === 'true');
@@ -376,21 +382,14 @@
       const gaEventName = willLike ? 'like' : 'like_removed';
       const gaParams = {
         content_id: episodeKey,
+        episode_number: episodeNumberFromKey(episodeKey),
         content_title: label || episodeKey,
         content_type: 'episode',
         method: 'button'
       };
 
-      if (window.gtag) {
-        gtag('event', gaEventName, gaParams);
-        console.debug('GA event sent:', gaEventName, gaParams);
-      } else {
-        console.debug('gtag() not available — would send:', gaEventName, gaParams);
-      }
-
-      // also push to dataLayer for debugging/inspection
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push(Object.assign({ event: gaEventName, liked: willLike }, gaParams));
+      if (window.gtag) gtag('event', gaEventName, gaParams);
+      console.debug('GA event:', gaEventName, gaParams);
     } catch (e) {
       console.warn('Error sending GA event', e);
     }
@@ -482,7 +481,7 @@
     }
     // only count episodes the listener picked, not the automatic load on page open or autoplay-next
     if (opts.source === 'user') {
-      try { if (window.gtag) gtag('event', 'load_episode', { content_type: 'episode', content_id: `ep${ep.id}`, content_title: ep.title }); } catch (e) {}
+      try { if (window.gtag) gtag('event', 'load_episode', { content_type: 'episode', content_id: `ep${ep.id}`, episode_number: ep.id, content_title: ep.title }); } catch (e) {}
     }
     syncHeartState(episodeKey, ep.title);
 
@@ -777,18 +776,15 @@
       // ensure we always attach helpful defaults
       const ep = getEpisodeInfo();
       const base = {
-        event_category: 'audio',
         content_type: 'episode',
         content_id: ep.id,
+        episode_number: episodeNumberFromKey(ep.id),
         content_title: ep.title
       };
       const payload = Object.assign({}, base, params);
       if (window.gtag) {
         try { gtag('event', eventName, payload); } catch (e) { console.warn('gtag error', e); }
       }
-      // always push to dataLayer for visibility even if gtag isn't ready
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push(Object.assign({ event: eventName }, payload));
       console.debug('GA event:', eventName, payload);
     }
 
@@ -798,7 +794,7 @@
       const ep = listenEp;
       listenStart = null;
       // attribute to the episode that was actually playing, even if the source has already changed
-      if (sec > 2) pushGtag('listen_time', Object.assign({ seconds_listened: sec }, ep ? { content_id: ep.id, content_title: ep.title } : {}));
+      if (sec > 2) pushGtag('listen_time', Object.assign({ seconds_listened: sec }, ep ? { content_id: ep.id, episode_number: episodeNumberFromKey(ep.id), content_title: ep.title } : {}));
     }
 
     // Wire player events with episode-aware params
@@ -857,7 +853,7 @@
       // continue listening: auto-advance to the next released episode
       const next = getNextEpisode(currentEpisode);
       if (next) {
-        pushGtag('autoplay_next', { content_id: `ep${next.id}` });
+        pushGtag('autoplay_next', { content_id: `ep${next.id}`, episode_number: next.id });
         loadEpisode(next, { autoplay: true });
       }
     });
