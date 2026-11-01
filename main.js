@@ -99,7 +99,7 @@
 
     // Only make clickable if released
     if (ep.released && ep.src) {
-      div.addEventListener('click', () => loadEpisode(ep));
+      div.addEventListener('click', () => loadEpisode(ep, { source: 'user' }));
     }
 
     elList.appendChild(div);
@@ -229,6 +229,8 @@
 
   // track currently playing row key so we can hide it from the list and tag analytics
   let currentPlayingKey = null;
+  // set while restoring a saved position so that internal seek isn't reported as a user seek
+  let restoringPosition = false;
 
   const sparklePool = [];
 
@@ -433,6 +435,7 @@
     if (savedTime) {
       audioEl.addEventListener('loadedmetadata', function onReady() {
         audioEl.removeEventListener('loadedmetadata', onReady);
+        restoringPosition = true;
         audioEl.currentTime = parseFloat(savedTime);
       });
     }
@@ -477,7 +480,10 @@
         newEpisodeBtn.hidden = true;
       }
     }
-    try { if (window.gtag) gtag('event', 'load_episode', { event_category: 'audio', event_label: ep.title, content_id: `ep${ep.id}` }); } catch (e) {}
+    // only count episodes the listener picked, not the automatic load on page open or autoplay-next
+    if (opts.source === 'user') {
+      try { if (window.gtag) gtag('event', 'load_episode', { content_type: 'episode', content_id: `ep${ep.id}`, content_title: ep.title }); } catch (e) {}
+    }
     syncHeartState(episodeKey, ep.title);
 
     // hide the matching episode row from the list to avoid duplicate entry
@@ -545,7 +551,13 @@
 
   // seek slider: track user dragging so timeupdate doesn't fight the drag
   let miniPlayerSeeking = false;
-  miniPlayerSeek?.addEventListener('input', () => { miniPlayerSeeking = true; });
+  miniPlayerSeek?.addEventListener('input', () => {
+    miniPlayerSeeking = true;
+    const audioEl = document.getElementById('audio-player');
+    if (audioEl.duration && miniPlayerCurrentTime) {
+      miniPlayerCurrentTime.textContent = formatTime((parseFloat(miniPlayerSeek.value) / 100) * audioEl.duration);
+    }
+  });
   miniPlayerSeek?.addEventListener('change', () => {
     const audioEl = document.getElementById('audio-player');
     if (audioEl.duration) audioEl.currentTime = (parseFloat(miniPlayerSeek.value) / 100) * audioEl.duration;
@@ -618,7 +630,7 @@
   }
 
   document.getElementById('now-new-episode')?.addEventListener('click', () => {
-    if (latestReleased) loadEpisode(latestReleased, { autoplay: true });
+    if (latestReleased) loadEpisode(latestReleased, { autoplay: true, source: 'user' });
   });
 
   /* ------------------------------ Snowfall ------------------------------ */
@@ -745,9 +757,12 @@
     }, 5000);
 
     const checkpoints = [25, 50, 75, 90];
-    const sent = {};
+    let sent = {};
     let lastTime = 0;
     let listenStart = null;
+    let listenEp = null;
+    let seekTimer = null;
+    let seekFrom = null;
 
     function getEpisodeInfo() {
       // prefer explicit currentPlayingKey, then now heart dataset, then fallback to source filename
@@ -780,13 +795,16 @@
     function sendListenTime() {
       if (!listenStart) return;
       const sec = Math.floor((Date.now() - listenStart) / 1000);
+      const ep = listenEp;
       listenStart = null;
-      if (sec > 2) pushGtag('listen_time', { seconds_listened: sec });
+      // attribute to the episode that was actually playing, even if the source has already changed
+      if (sec > 2) pushGtag('listen_time', Object.assign({ seconds_listened: sec }, ep ? { content_id: ep.id, content_title: ep.title } : {}));
     }
 
     // Wire player events with episode-aware params
     plyr.on('play', () => {
       listenStart = Date.now();
+      listenEp = getEpisodeInfo();
       pushGtag('play', { position_sec: Math.floor(player.currentTime) });
     });
 
@@ -795,8 +813,32 @@
       pushGtag('pause', { position_sec: Math.floor(player.currentTime) });
     });
 
+    // one `seek` per scrub: wait until the position settles, report where it started and ended
     plyr.on('seeked', () => {
-      pushGtag('seek', { from_sec: Math.floor(lastTime), to_sec: Math.floor(player.currentTime) });
+      if (restoringPosition) { restoringPosition = false; return; }
+      if (seekFrom === null) seekFrom = lastTime;
+      clearTimeout(seekTimer);
+      seekTimer = setTimeout(() => {
+        pushGtag('seek', { from_sec: Math.floor(seekFrom), to_sec: Math.floor(player.currentTime) });
+        seekFrom = null;
+      }, 600);
+    });
+
+    // new source loaded: flush listen time to the old episode and reset per-episode state
+    player.addEventListener('loadstart', () => {
+      sendListenTime();
+      sent = {};
+      lastTime = 0;
+      seekFrom = null;
+      clearTimeout(seekTimer);
+    });
+
+    // tab hidden / page closing: don't lose the listening time of a long session
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'hidden') return;
+      const stillPlaying = !player.paused;
+      sendListenTime();
+      if (stillPlaying) { listenStart = Date.now(); listenEp = getEpisodeInfo(); }
     });
 
     plyr.on('ratechange', () => {
@@ -822,10 +864,14 @@
 
     plyr.on('timeupdate', () => {
       if (!player.duration) return;
+      if (player.seeking) return;
       const percent = (player.currentTime / player.duration) * 100;
+      // a jump (scrub, resume) means the listener skipped ahead: mark those milestones
+      // as passed without reporting them, so `progress` only counts real listening
+      const jumped = Math.abs(player.currentTime - lastTime) > 3;
       checkpoints.forEach(cp => {
         if (percent >= cp && !sent[cp]) {
-          pushGtag('progress', { milestone_pct: cp, position_sec: Math.floor(player.currentTime) });
+          if (!jumped) pushGtag('progress', { milestone_pct: cp, position_sec: Math.floor(player.currentTime) });
           sent[cp] = true;
         }
       });

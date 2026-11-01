@@ -426,6 +426,33 @@ a{color:inherit}
 .mini-player-seek{
   flex:1 1 auto;
   min-width:60px;
+  /* tall transparent hit area for fingers; the visible 4px track is drawn on the pseudo-elements */
+  height:32px;
+  background:transparent;
+  touch-action:none;
+}
+
+.mini-player-seek::-webkit-slider-runnable-track{
+  height:4px;
+  border-radius:999px;
+  background:rgba(107,227,255,0.2);
+}
+
+.mini-player-seek::-moz-range-track{
+  height:4px;
+  border-radius:999px;
+  background:rgba(107,227,255,0.2);
+}
+
+input.mini-player-seek::-webkit-slider-thumb{
+  margin-top:-6px;
+  width:16px;
+  height:16px;
+}
+
+input.mini-player-seek::-moz-range-thumb{
+  width:16px;
+  height:16px;
 }
 
 .mini-player-volume{
@@ -475,8 +502,12 @@ a{color:inherit}
 
 @media (max-width:720px){
   .mini-player-title{padding:8px 14px 0;}
-  .mini-player-body{padding:8px 14px 10px; gap:6px;}
+  .mini-player-body{padding:8px 14px 10px; gap:6px; flex-wrap:wrap; justify-content:space-between;}
   .mini-player-volume{display:none;}
+  /* seek bar gets its own full-width row above the buttons so it's long enough to scrub precisely */
+  #mini-player-current-time{order:-3;}
+  .mini-player-seek{order:-2; flex:1 1 calc(100% - 90px); min-width:0;}
+  #mini-player-duration{order:-1;}
 }
 
 /* ---------------- Now Playing ---------------- */
