@@ -548,17 +548,6 @@
   plyr.on('pause', () => setMiniPlayerPlaying(false));
   plyr.on('ended', () => setMiniPlayerPlaying(false));
 
-  // "now playing" state chip in the player card follows the real playback state
-  const nowStateEl = document.getElementById('now-state');
-  const nowStateTextEl = document.getElementById('now-state-text');
-  function setNowState(isPlaying) {
-    if (nowStateEl) nowStateEl.classList.toggle('playing', isPlaying);
-    if (nowStateTextEl) nowStateTextEl.textContent = isPlaying ? '再生中' : '停止中';
-  }
-  plyr.on('play', () => setNowState(true));
-  plyr.on('pause', () => setNowState(false));
-  plyr.on('ended', () => setNowState(false));
-
   // seek slider: track user dragging so timeupdate doesn't fight the drag
   let miniPlayerSeeking = false;
   miniPlayerSeek?.addEventListener('input', () => {
