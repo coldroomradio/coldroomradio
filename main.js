@@ -466,10 +466,10 @@
 
     // the "now" card always reflects whatever is loaded (resumed or just-picked),
     // so its label and the "new episode available" nudge must stay truthful to that
-    const nowLabelEl = document.getElementById('now-label');
+    const newBadgeEl = document.getElementById('now-new-badge');
     const newEpisodeBtn = document.getElementById('now-new-episode');
     const isLatest = !latestReleased || ep.id === latestReleased.id;
-    if (nowLabelEl) nowLabelEl.textContent = isLatest ? '最新のエピソード' : '再生中';
+    if (newBadgeEl) newBadgeEl.hidden = !isLatest;
     if (newEpisodeBtn) {
       if (!isLatest && latestReleased) {
         const titleEl = document.getElementById('now-new-episode-title');
@@ -547,6 +547,17 @@
   plyr.on('play', () => setMiniPlayerPlaying(true));
   plyr.on('pause', () => setMiniPlayerPlaying(false));
   plyr.on('ended', () => setMiniPlayerPlaying(false));
+
+  // "now playing" state chip in the player card follows the real playback state
+  const nowStateEl = document.getElementById('now-state');
+  const nowStateTextEl = document.getElementById('now-state-text');
+  function setNowState(isPlaying) {
+    if (nowStateEl) nowStateEl.classList.toggle('playing', isPlaying);
+    if (nowStateTextEl) nowStateTextEl.textContent = isPlaying ? '再生中' : '停止中';
+  }
+  plyr.on('play', () => setNowState(true));
+  plyr.on('pause', () => setNowState(false));
+  plyr.on('ended', () => setNowState(false));
 
   // seek slider: track user dragging so timeupdate doesn't fight the drag
   let miniPlayerSeeking = false;

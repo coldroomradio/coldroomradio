@@ -71,7 +71,13 @@
       </div>
 
       <div class="now" style="margin-top:14px;">
-        <div class="label" id="now-label">最新のエピソード</div>
+        <div class="now-head">
+          <span class="now-state" id="now-state">
+            <span class="now-state-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="now-state-text">停止中</span>
+          </span>
+          <span class="now-new-badge" id="now-new-badge" hidden>NEW 最新エピソード</span>
+        </div>
 
         <button type="button" id="now-new-episode" class="now-new-episode" hidden>
           新着: <span id="now-new-episode-title"></span> を再生 →
@@ -94,6 +100,16 @@
             </button>
           </div>
 
+        </div>
+      </div>
+
+      <div class="notice-marquee" role="note" aria-label="お知らせ: いつも聴いてくださってありがとうございます。2027年からは、月に1〜2回のペースでお届けします。お手紙・イラストはこれまでどおりお待ちしています。">
+        <span class="notice-marquee-chip">お知らせ</span>
+        <div class="notice-marquee-view" aria-hidden="true">
+          <div class="notice-marquee-track">
+            <span>いつも聴いてくださってありがとうございます。2027年からは、月に1〜2回のペースでお届けします。お手紙・イラストはこれまでどおりお待ちしています。</span>
+            <span>いつも聴いてくださってありがとうございます。2027年からは、月に1〜2回のペースでお届けします。お手紙・イラストはこれまでどおりお待ちしています。</span>
+          </div>
         </div>
       </div>
     </section>
@@ -158,7 +174,7 @@
         <div class="faq-item"><div class="faq-question" role="button" tabindex="0" aria-expanded="false">へー...ってか誰？</div><div class="faq-answer">ただのファンです。関係者ではありません。</div></div>
         <div class="faq-item"><div class="faq-question" role="button" tabindex="0" aria-expanded="false">で、そのParallel Time Archiveって何？</div><div class="faq-answer">時空を超えて旅する者たちの記録を保管する機関です。<br>(私たちに馴染みのある文字を使って設定を入れてみたかっただけです)</div></div>
         <div class="faq-item"><div class="faq-question" role="button" tabindex="0" aria-expanded="false">Cold Roomとは？</div><div class="faq-answer">Perfumeのコールドcapsuleが保管されている場所です。<br>私たちがこのRoomでスリープ明けまで暖かく3人を見守っているという独自の設定です。</div></div>
-        <div class="faq-item"><div class="faq-question" role="button" tabindex="0" aria-expanded="false">新しいのはいつアップされるの？</div><div class="faq-answer">週一の更新を予定しています。<br>お手紙やイラストの投稿が多い時は、もう少し頻繁に更新するかもしれません。</div></div>
+        <div class="faq-item"><div class="faq-question" role="button" tabindex="0" aria-expanded="false">新しいのはいつアップされるの？</div><div class="faq-answer">現在は週一の更新を予定しています。<br>2027年からは、月に1〜2回のペースでお届けする予定です。<br>お手紙やイラストの投稿が多い時は、もう少し頻繁に更新するかもしれません。</div></div>
       </div>
     </section>
   </main>
