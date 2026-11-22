@@ -51,4 +51,5 @@ window.EPISODE_LIST = [
   { id:45, title:"<slow prfm>", date:"2026/11/01公開", desc:"少しずつペースを落としていく？", src:"https://archive.org/download/coldroomradio_ep45_slowprfm/coldroomradio_ep45_slowprfm.mp3", release_at: "2026-11-01T18:59:00+09:00" },
   { id:46, title:"<dvd love>", date:"2026/11/08公開", desc:"大好きなライブDVDの話", src:"https://archive.org/download/coldroomradio_ep46_dvdlove/coldroomradio_ep46_dvdlove.mp3", release_at: "2026-11-08T18:59:00+09:00" },
   { id:47, title:"<happy wedding>", date:"2026/11/15公開", desc:"末長くお幸せに！！", src:"https://archive.org/download/coldroomradio_ep47_happywedding/coldroomradio_ep47_happywedding.mp3", release_at: "2026-11-15T18:59:00+09:00" },
+  { id:48, title:"<AKNFavorites>", date:"2026/11/22公開", desc:"こう来たか！！！あー！待てないね！！", src:"https://archive.org/download/coldroomradio_ep48_aknfavorites/coldroomradio_ep48_aknfavorites.mp3", release_at: "2026-11-22T18:59:00+09:00" },
 ];
